@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atsu.tabletennisreservation.mapper.RoleMenuMapper">
+    <resultMap id="baseRoleMenu" type="RoleMenu">
+        <result property="guid" column="GUID"></result>
+        <result property="roleId" column="ROLE_ID"></result>
+        <result property="menuId" column="MENU_ID"></result>
+    </resultMap>
+<!--
+      int saveRoleMenu(@Param("roleMenu") RoleMenu roleMenu);
+-->
+    <insert id="saveRoleMenu">
+        insert  into ROLE_MENU(GUID,ROLE_ID,MENU_ID)
+        values (#{roleMenu.guid},#{roleMenu.roleId},#{roleMenu.menuId})
+    </insert>
+<!--
+      List<RoleMenu> getRoleMenu(@Param("roleMenu") RoleMenu roleMenu);
+-->
+    <select id="getRoleMenu" resultMap="baseRoleMenu">
+        select  * from  ROLE_MENU where  1=1
+        <if test="roleMenu.roleId != null and roleMenu.roleId != '' and roleMenu.roleId.length() > 0">
+            AND ROLE_ID = #{roleMenu.roleId}
+        </if>
+        <if test="roleMenu.menuId != null and roleMenu.menuId != '' and roleMenu.menuId.length() > 0">
+            AND MENU_ID=#{roleMenu.menuId}
+        </if>
+    </select>
+<!--
+ int deleteRoleMenu(@Param("roleMenu") RoleMenu roleMenu);
+-->
+    <delete id="deleteRoleMenu">
+        DELETE  FROM  ROLE_MENU WHERE 1=1
+        <if test="roleMenu.roleId != null and roleMenu.roleId != '' and roleMenu.roleId.length() > 0">
+            AND ROLE_ID = #{roleMenu.roleId}
+        </if>
+        <if test="roleMenu.menuId != null and roleMenu.menuId != '' and roleMenu.menuId.length() > 0">
+            AND MENU_ID=#{roleMenu.menuId}
+        </if>
+    </delete>
+
+<!--
+ int saveRoleMenuBatch(@Param("roleMenuList") List<RoleMenu> roleMenuList);
+-->
+    <insert id="saveRoleMenuBatch">
+          insert  into ROLE_MENU(GUID,ROLE_ID,MENU_ID)
+          values
+        <foreach collection="roleMenuList" separator="," item="roleMenu">
+            (#{roleMenu.guid},#{roleMenu.roleId},#{roleMenu.menuId})
+        </foreach>
+    </insert>
+</mapper>

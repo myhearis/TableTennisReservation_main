@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atsu.tabletennisreservation.mapper.RoleMapper">
+    <resultMap id="baseRole" type="Role">
+        <result property="guid" column="GUID"></result>
+        <result property="name" column="NAME"></result>
+        <result property="remark" column="REMARK"></result>
+        <collection property="menuList" select="com.atsu.tabletennisreservation.mapper.MenuMapper.getRoleMenuList" column="GUID"></collection>
+    </resultMap>
+<!--
+ //添加角色
+    int saveRole(@Param("role") Role role);
+-->
+    <insert id="saveRole">
+        INSERT  INTO ROLE(GUID,NAME,REMARK)
+        VALUES
+        (#{role.guid},#{role.name},#{role.remark})
+    </insert>
+<!--    //查询角色-->
+<!--    List<Role> getRoleList(@Param("role") Role role);-->
+    <select id="getRoleList" resultMap="baseRole">
+        select  * from ROLE where 1=1
+        <if test="role.guid != null and role.guid != '' and role.guid.length() > 0">
+          AND  GUID = #{role.guid}
+        </if>
+        <if test="role.name != null and role.name != '' and role.name.length() > 0">
+            AND  NAME = #{role.name}
+        </if>
+        <if test="role.remark != null and role.remark != '' and role.remark.length() > 0">
+            AND  REMARK = #{role.remark}
+        </if>
+    </select>
+<!--
+  //删除角色
+    int deleteRole(@Param("role") Role role);
+-->
+    <delete id="deleteRole">
+        DELETE  FROM  ROLE where  1=1
+        <if test="role.guid != null and role.guid != '' and role.guid.length() > 0">
+            GUID = #{role.guid}
+        </if>
+        <if test="role.name != null and role.name != '' and role.name.length() > 0">
+            NAME = #{role.name}
+        </if>
+        <if test="role.remark != null and role.remark != '' and role.remark.length() > 0">
+            REMARK = #{role.remark}
+        </if>
+    </delete>
+<!--
+   //修改角色
+    int updateRoleById(@Param("role") Role role);
+-->
+    <update id="updateRoleById">
+        UPDATE  ROLE
+        <set>
+            <if test="role.name != null and role.name != '' and role.name.length() > 0">
+                NAME = #{role.name},
+            </if>
+            <if test="role.remark != null and role.remark != '' and role.remark.length() > 0">
+                REMARK = #{role.remark},
+            </if>
+        </set>
+        WHERE  GUID=#{role.guid}
+    </update>
+</mapper>

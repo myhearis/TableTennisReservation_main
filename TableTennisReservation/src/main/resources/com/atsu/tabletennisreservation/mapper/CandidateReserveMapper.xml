@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atsu.tabletennisreservation.mapper.CandidateReserveMapper">
+    <resultMap id="baseCandidateReserve" type="CandidateReserve">
+        <result property="guid" column="GUID"></result>
+        <result property="userId" column="USER_ID"></result>
+        <result property="tableId" column="TABLE_ID"></result>
+        <result property="startDate" column="START_DATE"></result>
+        <result property="useTime" column="USE_TIME"></result>
+        <result property="status" column="STATUS"></result>
+        <result property="tableCode" column="TABLE_CODE"></result>
+        <result property="processStartDate" column="PROCESS_START_DATE"></result>
+        <result property="createDate" column="CREATE_DATE"></result>
+        <result property="payAmt" column="PAY_AMT"></result>
+        <result property="outTradeNo" column="OUT_TRADE_NO"></result>
+        <result property="tradeNo" column="TRADE_NO"></result>
+        <result property="userName" column="USER_NAME"></result>
+    </resultMap>
+<!--
+      //根据条件查询
+     List<CandidateReserve> getCandidateReserveList(@Param("candidateReserve") CandidateReserve candidateReserve);
+-->
+    <select id="getCandidateReserveList" resultMap="baseCandidateReserve">
+        SELECT
+           *
+         FROM  CANDIDATE_RESERVE where  1=1
+        <if test="candidateReserve.guid!=null">
+            and  GUID = #{candidateReserve.guid}
+        </if>
+        <if test="candidateReserve.userId!=null">
+            and  USER_ID = #{candidateReserve.userId}
+        </if>
+        <if test="candidateReserve.tableId!=null">
+            and  TABLE_ID = #{candidateReserve.tableId}
+        </if>
+        <if test="candidateReserve.status!=null">
+            and  STATUS = #{candidateReserve.status}
+        </if>
+        <if test="candidateReserve.tableCode!=null">
+            and  TABLE_CODE = #{candidateReserve.tableCode}
+        </if>
+        ORDER BY CREATE_DATE
+    </select>
+<!--
+  //保存
+    int saveCandidateReserve(@Param("candidateReserve") CandidateReserve candidateReserve);
+-->
+    <insert id="saveCandidateReserve">
+        INSERT INTO CANDIDATE_RESERVE (
+          GUID,
+          USER_ID,
+          TABLE_ID,
+          START_DATE,
+          USE_TIME,
+          STATUS,
+          TABLE_CODE,
+          CREATE_DATE,
+          PAY_AMT,
+          OUT_TRADE_NO,
+          TRADE_NO,
+          USER_NAME
+        )
+        VALUES (
+         #{candidateReserve.guid},
+         #{candidateReserve.userId},
+         #{candidateReserve.tableId},
+         #{candidateReserve.startDate},
+         #{candidateReserve.useTime},
+         #{candidateReserve.status},
+         #{candidateReserve.tableCode},
+         #{candidateReserve.createDate},
+          #{candidateReserve.payAmt},
+           #{candidateReserve.outTradeNo},
+            #{candidateReserve.tradeNo},
+              #{candidateReserve.userName}
+          );
+    </insert>
+<!--
+    //根据条件删除
+    int deleteCandidateReserve(@Param("candidateReserve") CandidateReserve candidateReserve);
+-->
+    <delete id="deleteCandidateReserve">
+        delete  from  CANDIDATE_RESERVE where  1=1
+        <if test="candidateReserve.guid!=null">
+            and  GUID = #{candidateReserve.guid}
+        </if>
+        <if test="candidateReserve.userId!=null">
+            and  USER_ID = #{candidateReserve.userId}
+        </if>
+        <if test="candidateReserve.tableId!=null">
+            and  TABLE_ID = #{candidateReserve.tableId}
+        </if>
+        <if test="candidateReserve.status!=null">
+            and  STATUS = #{candidateReserve.status}
+        </if>
+        <if test="candidateReserve.tableCode!=null">
+            and  TABLE_CODE = #{candidateReserve.tableCode}
+        </if>
+    </delete>
+
+<!--
+ //更新
+    int updateCandidateReserveById(@Param("candidateReserve") CandidateReserve candidateReserve);
+-->
+    <update id="updateCandidateReserveById">
+        UPDATE  CANDIDATE_RESERVE
+        <set>
+            <if test="candidateReserve.userId!=null">
+                USER_ID= #{candidateReserve.userId},
+            </if>
+            <if test="candidateReserve.tableId!=null">
+                TABLE_ID=   #{candidateReserve.tableId},
+            </if>
+            <if test="candidateReserve.startDate!=null">
+                START_DATE=   #{candidateReserve.startDate},
+            </if>
+            <if test="candidateReserve.useTime!=null">
+                USE_TIME=  #{candidateReserve.useTime},
+            </if>
+            <if test="candidateReserve.status!=null">
+                  STATUS = #{candidateReserve.status},
+            </if>
+            <if test="candidateReserve.tableCode!=null">
+                  TABLE_CODE = #{candidateReserve.tableCode},
+            </if>
+        </set>
+          where  GUID =  #{candidateReserve.guid}
+    </update>
+<!--
+   //根据期间查询符合的候补信息
+    List<CandidateReserve>  getUseCandidateReserveList(@Param("period") Period period );
+-->
+    <select id="getUseCandidateReserveList" resultMap="baseCandidateReserve">
+        SELECT  * FROM  CANDIDATE_RESERVE WHERE  1=1
+        AND TABLE_CODE = #{period.tableCode}
+        AND CONVERT(SUBSTRING(START_DATE ,12,2), SIGNED) &gt;= #{period.startTime}
+        AND USE_TIME &lt;= #{period.useTime}
+        AND STATUS = 0
+        AND PROCESS_START_DATE = #{period.dateStr}
+        ORDER BY CREATE_DATE
+    </select>
+</mapper>

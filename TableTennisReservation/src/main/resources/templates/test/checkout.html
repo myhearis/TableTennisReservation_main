@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* 未选中状态样式 */
+        .checkbox {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #999;
+            background-color: #fff;
+        }
+
+        /* 选中状态样式 */
+        .checkbox input:checked + label {
+            background-color: #5cb85c;
+            border-color: #4cae4c;
+        }
+    </style>
+</head>
+<body>
+<div class="checkbox">
+    <input type="checkbox" id="myCheckbox">
+    <label for="myCheckbox"></label>
+</div>
+</body>
+</html>

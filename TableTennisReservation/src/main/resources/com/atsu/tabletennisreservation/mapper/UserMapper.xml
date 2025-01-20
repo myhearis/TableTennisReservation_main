@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atsu.tabletennisreservation.mapper.UserMapper">
+    <resultMap id="baseUser" type="User">
+        <result property="guid" column="GUID"></result>
+        <result property="userName" column="USER_NAME"></result>
+        <result property="password" column="PASSWORD"></result>
+        <result property="imgPath" column="IMG_PATH"></result>
+        <result property="mobilePhone" column="MOBILE_PHONE"></result>
+        <result property="gender" column="GENDER"></result>
+        <result property="age" column="AGE"></result>
+        <result property="createDate" column="CREATE_DATE"></result>
+        <result property="createUser" column="CREATE_USER"></result>
+        <result property="updateDate" column="UPDATE_DATE"></result>
+        <result property="updateUser" column="UPDATE_USER"></result>
+        <result property="status" column="STATUS"></result>
+        <result property="email" column="EMAIL"></result>
+        <result property="roleId" column="ROLE_ID"></result>
+    </resultMap>
+    <!--    public User getUserById( @Param("userId") String userId);-->
+    <select id="getUserById" resultMap="baseUser">
+        select * from CAUSUER where guid=#{userId}  and status=1;
+    </select>
+
+<!--    public int savaUser(@Param("user") User user);-->
+    <insert id="savaUser">
+        INSERT INTO CAUSUER (GUID, USER_NAME, PASSWORD, IMG_PATH, MOBILE_PHONE, GENDER, AGE, CREATE_DATE, CREATE_USER, UPDATE_DATE, UPDATE_USER, STATUS,ROLE_ID)
+        VALUES (#{user.guid}, #{user.userName}, #{user.password}, #{user.imgPath}, #{user.mobilePhone}, #{user.gender}, #{user.age}, #{user.createDate}, #{user.createUser}, #{user.updateDate}, #{user.updateUser}, #{user.status},#{user.roleId});
+    </insert>
+<!--    List<User> getUserList();-->
+    <select id="getUserList" resultMap="baseUser">
+        select  * from CAUSUER  and status=1
+    </select>
+<!--     User getUserByCode(@Param("code") String code);-->
+    <select id="getUserByCode" resultMap="baseUser">
+         select * from CAUSUER where USER_NAME=#{code} and status=1
+    </select>
+<!-- int deleteUserById(@Param("userId") String userId);-->
+    <delete id="deleteUserById">
+        update  CAUSUER set status=0 where  guid=#{userId}
+    </delete>
+<!--    int deleteUserByCode(@Param("code") String code);-->
+    <delete id="deleteUserByCode">
+        update  CAUSUER set status=0 where  USER_NAME=#{code}
+    </delete>
+<!--    int updateUserById(@Param("user") User user);-->
+    <update id="updateUserById">
+        UPDATE CAUSUER SET
+        <if test="user.userName!=null">
+            USER_NAME = #{user.userName},
+        </if>
+        <if test="user.password!=null">
+            PASSWORD = #{user.password},
+        </if>
+        <if test="user.imgPath!=null">
+            IMG_PATH = #{user.imgPath},
+        </if>
+        <if test="user.mobilePhone!=null">
+            MOBILE_PHONE = #{user.mobilePhone},
+        </if>
+
+        <if test="user.gender!=null">
+            GENDER = #{user.gender},
+        </if>
+
+        <if test="user.age!=null">
+            AGE = #{user.age},
+        </if>
+
+        <if test="user.updateDate!=null">
+            UPDATE_DATE = #{user.updateDate},
+        </if>
+
+        <if test="user.updateUser!=null">
+            UPDATE_USER = #{user.updateUser},
+        </if>
+
+        <if test="user.status!=null">
+            STATUS = #{user.status},
+        </if>
+
+        <if test="user.email!=null">
+            EMAIL=#{user.email}
+        </if>
+        WHERE GUID = #{user.guid}
+    </update>
+<!--    User getUserByIdAndStatus(@Param("userId") String userId,@Param("status") String status);-->
+    <select id="getUserByIdAndStatus" resultMap="baseUser">
+         select * from CAUSUER where guid=#{userId}  and status=#{status}
+    </select>
+
+<!--        //判断用户名是否存在
+    int userCodeIsExist(@Param("userCode") String userCode);
+    -->
+    <select id="userCodeIsExist">
+        select count(*) from causer where  USERNAME=#{userCode}
+    </select>
+<!--    //根据条件查询用户
+    List<User> getConditionUserCList(@Param("user") User user);
+    -->
+    <select id="getConditionUserCList" resultMap="baseUser">
+         select * from CAUSUER where 1=1
+        <if test="user.userName!=null">
+          AND  USER_NAME = #{user.userName}
+        </if>
+        <if test="user.password!=null">
+            AND  PASSWORD = #{user.password}
+        </if>
+        <if test="user.imgPath!=null">
+            AND IMG_PATH = #{user.imgPath}
+        </if>
+        <if test="user.mobilePhone!=null">
+            AND  MOBILE_PHONE = #{user.mobilePhone}
+        </if>
+
+        <if test="user.gender!=null">
+            AND  GENDER = #{user.gender}
+        </if>
+
+        <if test="user.age!=null">
+            AND AGE = #{user.age}
+        </if>
+
+        <if test="user.updateDate!=null">
+            AND UPDATE_DATE = #{user.updateDate}
+        </if>
+
+        <if test="user.updateUser!=null">
+            AND  UPDATE_USER = #{user.updateUser}
+        </if>
+
+        <if test="user.status!=null">
+            AND  STATUS = #{user.status}
+        </if>
+
+        <if test="user.email!=null">
+            AND  EMAIL=#{user.email}
+        </if>
+        <if test="user.roleId!=null">
+            AND  ROLE_ID = #{user.roleId}
+        </if>
+    </select>
+<!--
+//批量查询用户
+    List<User> getUserBatch(@Param("ids") List<String> ids);
+-->
+    <select id="getUserBatch" resultMap="baseUser">
+        SELECT  * FROM  CAUSUER where 1=1
+        and guid in
+        (
+        <foreach collection="ids" separator="," item="id">
+            #{id}
+        </foreach>
+        )
+    </select>
+</mapper>

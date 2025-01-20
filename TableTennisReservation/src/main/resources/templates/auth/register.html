@@ -1,0 +1,154 @@
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>注册账号</title>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- jQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet"
+          href="/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet"
+          href="/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet"
+          href="/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <link rel="stylesheet"
+          href="/plugins/daterangepicker/daterangepicker.css">
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link rel="stylesheet"
+          href="/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- Bootstrap Color Picker -->
+    <link rel="stylesheet"
+          href="/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet"
+          href="/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <!-- Select2 -->
+    <link rel="stylesheet" href="/plugins/select2/css/select2.min.css">
+    <link rel="stylesheet"
+          href="/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <!-- Bootstrap4 Duallistbox -->
+    <link rel="stylesheet"
+          href="/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
+    <!-- BS Stepper -->
+    <link rel="stylesheet" href="/plugins/bs-stepper/css/bs-stepper.min.css">
+    <!-- dropzonejs -->
+    <link rel="stylesheet" href="/plugins/dropzone/min/dropzone.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/dist/css/adminlte.min.css">
+
+
+</head>
+<script>
+    //全局变量
+    var base_url = '[[${sys_base_url}]]';
+    var img_url='[[${sys_img_url}]]';
+    var sys_ip_port='[[${sys_ip_port}]]';//系统ip+端口号，目前用于webSocket
+</script>
+<body class="login-page" style="min-height: 496.391px;">
+<div class="login-box">
+    <div class="login-logo">
+        <img src="/dist/img/megasteel.png" alt="AdminLTE Logo" class="brand-image" style="opacity: .8">
+        <a href="#"><b>乒乓球馆预定系统</b></a>
+    </div>
+    <!-- /.login-logo -->
+<!--    <div class="card">-->
+<!--        <div class="card-body login-card-body">-->
+<!--            <p class="login-box-msg">请输入您的注册信息</p>-->
+
+<!--            <form class="login-form" method="post" th:action="@{/user/processLogin}">-->
+<!--                <div class="input-group mb-3">-->
+<!--                    <div class="custom-file">-->
+<!--                        <input type="file" class="custom-file-input" id="customFileLangHTML" accept=".jpg, .jpeg, .png, .gif">-->
+<!--                        <label class="custom-file-label" for="customFileLangHTML" data-browse="Bestand kiezen">选择头像</label>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="input-group mb-3">-->
+
+<!--                    <input value="admin" name="userName" class="form-control"-->
+<!--                           placeholder="username">-->
+<!--                    <div class="input-group-append">-->
+<!--                        <div class="input-group-text">-->
+<!--                            <span class="fas fa-envelope"></span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="input-group mb-3">-->
+<!--                    <input value="admin" name="password" type="password"-->
+<!--                           class="form-control" placeholder="Password">-->
+<!--                    <div class="input-group-append">-->
+<!--                        <div class="input-group-text">-->
+<!--                            <span class="fas fa-lock"></span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="row">-->
+<!--                    <div class="col-8">-->
+<!--                        <div class="icheck-primary">-->
+<!--                            <input type="checkbox" id="remember"> <label-->
+<!--                                for="remember"> 记住我 </label>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    &lt;!&ndash; /.col &ndash;&gt;-->
+<!--                    <div class="col-4">-->
+<!--                        <button type="submit" class="btn btn-primary btn-block">注册</button>-->
+<!--                    </div>-->
+<!--                    &lt;!&ndash; /.col &ndash;&gt;-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--        &lt;!&ndash; /.login-card-body &ndash;&gt;-->
+<!--    </div>-->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title" >用户注册</h3>
+            <div class="card-tools">
+                <!-- Buttons, labels, and many other things can be placed here! -->
+                <!-- Here is a label for example -->
+                <span class="badge badge-primary">注册</span>
+            </div>
+            <!-- /.card-tools -->
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <form method="post" id="register_form" th:action="@{/user/processRegister}">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">用户名</label>
+                    <input type="text" class="form-control" name="userName" id="exampleInputEmail1" aria-describedby="emailHelp">
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">密码</label>
+                    <input type="password" class="form-control" name="password" id="exampleInputPassword1">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword2">确认密码</label>
+                    <input type="password" class="form-control" name="surePassword" id="exampleInputPassword2">
+                    <small id="msg" class="form-text text-muted text-red"></small>
+                </div>
+            </form>
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer" align="right">
+            <button type="submit" class="btn btn-primary" id="submit">注册</button>
+        </div>
+        <!-- /.card-footer -->
+    </div>
+    <!-- /.card -->
+</div>
+<div th:insert="includes/script :: script"></div>
+<!--    引入消息提示 socket_message-->
+<div th:insert="includes/webSocketMessage :: socket_message"></div>
+</body>
+<!--通用的工具-->
+<script th:src="@{/js/common_utils.js}"></script>
+<!--自定义的js-->
+<script th:src="@{/js/auth/register.js}"></script>
+<!--消息js-->
+<script th:src="@{/js/user/message.js}"></script>
+</html>

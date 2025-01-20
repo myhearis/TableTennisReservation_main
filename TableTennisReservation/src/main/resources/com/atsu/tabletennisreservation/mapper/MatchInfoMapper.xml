@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atsu.tabletennisreservation.mapper.MatchInfoMapper">
+    <resultMap id="baseMatchInfo" type="MatchInfo">
+        <result property="guid" column="GUID"></result>
+        <result property="billReserveId" column="BILL_RESERVE_ID"></result>
+        <result property="billUserId" column="BILL_USER_ID"></result>
+        <result property="billUserName" column="BILL_USER_NAME"></result>
+        <result property="billUserOutTradeNo" column="BILL_USER_OUT_TRADE_NO"></result>
+        <result property="billUserTradeNo" column="BILL_USER_TRADE_NO"></result>
+
+        <result property="billUserNeedPayAmt" column="BILL_USER_NEED_PAY_AMT"></result>
+
+        <result property="matchUserId" column="MATCH_USER_ID"></result>
+        <result property="matchUserName" column="MATCH_USER_NAME"></result>
+        <result property="matchUserOutTradeNo" column="MATCH_USER_OUT_TRADE_NO"></result>
+        <result property="matchUserTradeNo" column="MATCH_USER_TRADE_NO"></result>
+
+        <result property="matchUserNeedPayAmt" column="MATCH_USER_NEED_PAY_AMT"></result>
+
+        <result property="level" column="LEVEL"></result>
+        <result property="billRemark" column="BILL_REMARK"></result>
+        <result property="tableId" column="TABLE_ID"></result>
+        <result property="tableCode" column="TABLE_CODE"></result>
+        <result property="startDate" column="START_DATE"></result>
+        <result property="useTime" column="USE_TIME"></result>
+        <result property="status" column="STATUS"></result>
+        <result property="createDate" column="CREATE_DATE"></result>
+        <result property="createUser" column="CREATE_USER"></result>
+        <result property="updateDate" column="UPDATE_DATE"></result>
+        <result property="updateUser" column="UPDATE_USER"></result>
+        <result property="processStartDate" column="PROCESS_START_DATE"></result>
+        <association property="ballTable" select="com.atsu.tabletennisreservation.mapper.BallTableMapper.getBallTableById" column="TABLE_ID"></association>
+    </resultMap>
+<!--
+  //保存
+    int saveMatchInfo(@Param("matchInfo") MatchInfo matchInfo);
+-->
+    <insert id="saveMatchInfo">
+        INSERT INTO MATCH_INFO (
+         GUID, BILL_RESERVE_ID, BILL_USER_ID, BILL_USER_NAME,
+         BILL_USER_OUT_TRADE_NO, BILL_USER_TRADE_NO, MATCH_USER_ID, MATCH_USER_NAME,
+         MATCH_USER_OUT_TRADE_NO, MATCH_USER_TRADE_NO, LEVEL, BILL_REMARK,
+         TABLE_ID, TABLE_CODE,START_DATE, USE_TIME,
+          STATUS, CREATE_DATE, CREATE_USER, UPDATE_DATE, UPDATE_USER,
+          BILL_USER_NEED_PAY_AMT,MATCH_USER_NEED_PAY_AMT
+          )
+        VALUES (
+        #{matchInfo.guid}, #{matchInfo.billReserveId}, #{matchInfo.billUserId}, #{matchInfo.billUserName},
+        #{matchInfo.billUserOutTradeNo},#{matchInfo.billUserTradeNo}, #{matchInfo.matchUserId}, #{matchInfo.matchUserName},
+        #{matchInfo.matchUserOutTradeNo}, #{matchInfo.matchUserTradeNo}, #{matchInfo.level}, #{matchInfo.billRemark},
+         #{matchInfo.tableId}, #{matchInfo.tableCode}, #{matchInfo.startDate}, #{matchInfo.useTime},
+          #{matchInfo.status}, #{matchInfo.createDate}, #{matchInfo.createUser},#{matchInfo.updateDate}, #{matchInfo.updateUser},
+          #{matchInfo.billUserNeedPayAmt},  #{matchInfo.matchUserNeedPayAmt}
+          )
+    </insert>
+<!--
+ //批量保存
+    int saveMatchInfoBatch(@Param("matchInfoList") List<MatchInfo> matchInfoList);
+-->
+    <insert id="saveMatchInfoBatch">
+          INSERT INTO MATCH_INFO (
+         GUID, BILL_RESERVE_ID, BILL_USER_ID, BILL_USER_NAME,
+         BILL_USER_OUT_TRADE_NO, BILL_USER_TRADE_NO, MATCH_USER_ID, MATCH_USER_NAME,
+         MATCH_USER_OUT_TRADE_NO, MATCH_USER_TRADE_NO, LEVEL, BILL_REMARK,
+         TABLE_ID, TABLE_CODE,START_DATE, USE_TIME,
+          STATUS, CREATE_DATE, CREATE_USER, UPDATE_DATE, UPDATE_USER,
+          BILL_USER_NEED_PAY_AMT,MATCH_USER_NEED_PAY_AMT
+          )
+          VALUES
+        <foreach collection="matchInfoList" separator="," item="matchInfo">
+            (
+            #{matchInfo.guid}, #{matchInfo.billReserveId}, #{matchInfo.billUserId}, #{matchInfo.billUserName},
+            #{matchInfo.billUserOutTradeNo},#{matchInfo.billUserTradeNo}, #{matchInfo.matchUserId}, #{matchInfo.matchUserName},
+            #{matchInfo.matchUserOutTradeNo}, #{matchInfo.matchUserTradeNo}, #{matchInfo.level}, #{matchInfo.billRemark},
+            #{matchInfo.tableId}, #{matchInfo.tableCode}, #{matchInfo.startDate}, #{matchInfo.useTime},
+            #{matchInfo.status}, #{matchInfo.createDate}, #{matchInfo.createUser},#{matchInfo.updateDate}, #{matchInfo.updateUser},
+            #{matchInfo.billUserNeedPayAmt},  #{matchInfo.matchUserNeedPayAmt}
+            )
+        </foreach>
+    </insert>
+<!--
+ //查询
+    List<MatchInfo> getMatchInfoList(@Param("matchInfo") MatchInfo matchInfo);
+-->
+    <select id="getMatchInfoList" resultMap="baseMatchInfo">
+        select  * from  MATCH_INFO where 1=1
+        <if test="matchInfo.guid!=null">
+            AND  GUID = #{matchInfo.guid}
+        </if>
+        <if test="matchInfo.billReserveId!=null">
+            AND  BILL_RESERVE_ID = #{matchInfo.billReserveId}
+        </if>
+        <if test="matchInfo.billUserId!=null">
+            AND  BILL_USER_ID = #{matchInfo.billUserId}
+        </if>
+        <if test="matchInfo.matchUserId!=null">
+            AND  MATCH_USER_ID = #{matchInfo.matchUserId}
+        </if>
+        <if test="matchInfo.level!=null">
+            AND  LEVEL = #{matchInfo.level}
+        </if>
+        <if test="matchInfo.status!=null">
+            AND  STATUS = #{matchInfo.status}
+        </if>
+        <if test="matchInfo.processStartDate!=null">
+            AND  PROCESS_START_DATE = #{matchInfo.processStartDate}
+        </if>
+
+        <if test="matchInfo.tableCode!=null">
+            AND  TABLE_CODE = #{matchInfo.tableCode}
+        </if>
+        <if test="matchInfo.matchUserOutTradeNo != null">
+            AND MATCH_USER_OUT_TRADE_NO = #{matchInfo.matchUserOutTradeNo}
+        </if>
+        <if test="matchInfo.matchUserTradeNo != null">
+            AND MATCH_USER_TRADE_NO = #{matchInfo.matchUserTradeNo}
+        </if>
+    </select>
+<!--
+    //更新
+    int updateMatchInfoById(@Param("matchInfo") MatchInfo matchInfo);
+-->
+    <update id="updateMatchInfoById">
+        UPDATE MATCH_INFO
+        <set>
+            <if test="matchInfo.billReserveId != null">BILL_RESERVE_ID = #{matchInfo.billReserveId},</if>
+            <if test="matchInfo.billUserId != null">BILL_USER_ID = #{matchInfo.billUserId},</if>
+            <if test="matchInfo.billUserName != null">BILL_USER_NAME = #{matchInfo.billUserName},</if>
+            <if test="matchInfo.billUserOutTradeNo != null">BILL_USER_OUT_TRADE_NO = #{matchInfo.billUserOutTradeNo},</if>
+            <if test="matchInfo.billUserTradeNo != null">BILL_USER_TRADE_NO = #{matchInfo.billUserTradeNo},</if>
+            <if test="matchInfo.matchUserId != null">MATCH_USER_ID = #{matchInfo.matchUserId},</if>
+            <if test="matchInfo.matchUserName != null">MATCH_USER_NAME = #{matchInfo.matchUserName},</if>
+            <if test="matchInfo.matchUserOutTradeNo != null">MATCH_USER_OUT_TRADE_NO = #{matchInfo.matchUserOutTradeNo},</if>
+            <if test="matchInfo.matchUserTradeNo != null">MATCH_USER_TRADE_NO = #{matchInfo.matchUserTradeNo},</if>
+            <if test="matchInfo.level != null">LEVEL = #{matchInfo.level},</if>
+            <if test="matchInfo.billRemark != null">BILL_REMARK = #{matchInfo.billRemark},</if>
+            <if test="matchInfo.tableId != null">TABLE_ID = #{matchInfo.tableId},</if>
+            <if test="matchInfo.tableCode != null">TABLE_CODE = #{matchInfo.tableCode},</if>
+            <if test="matchInfo.startDate != null">START_DATE = #{matchInfo.startDate},</if>
+            <if test="matchInfo.useTime != null">USE_TIME = #{matchInfo.useTime},</if>
+            <if test="matchInfo.status != null">STATUS = #{matchInfo.status},</if>
+            <if test="matchInfo.createDate != null">CREATE_DATE = #{matchInfo.createDate},</if>
+            <if test="matchInfo.createUser != null">CREATE_USER = #{matchInfo.createUser},</if>
+            <if test="matchInfo.updateDate != null">UPDATE_DATE = #{matchInfo.updateDate},</if>
+            <if test="matchInfo.updateUser != null">UPDATE_USER = #{matchInfo.updateUser},</if>
+            <if test="matchInfo.billUserNeedPayAmt != null">BILL_USER_NEED_PAY_AMT = #{matchInfo.billUserNeedPayAmt},</if>
+            <if test="matchInfo.matchUserNeedPayAmt != null">MATCH_USER_NEED_PAY_AMT = #{matchInfo.matchUserNeedPayAmt}</if>
+        </set>
+        where GUID = #{matchInfo.guid}
+    </update>
+<!--
+  //删除
+    int deleteMatchInfo(@Param("matchInfo") MatchInfo matchInfo);
+ -->
+    <delete id="deleteMatchInfo">
+        DELETE  FROM  MATCH_INFO where 1=1
+        <if test="matchInfo.guid != null"> AND GUID = #{matchInfo.guid}</if>
+        <if test="matchInfo.billReserveId != null"> AND BILL_RESERVE_ID = #{matchInfo.billReserveId}</if>
+        <if test="matchInfo.billUserId != null"> AND BILL_USER_ID = #{matchInfo.billUserId}</if>
+        <if test="matchInfo.billUserName != null"> AND BILL_USER_NAME = #{matchInfo.billUserName}</if>
+        <if test="matchInfo.billUserOutTradeNo != null"> AND BILL_USER_OUT_TRADE_NO = #{matchInfo.billUserOutTradeNo}</if>
+        <if test="matchInfo.billUserTradeNo != null"> AND BILL_USER_TRADE_NO = #{matchInfo.billUserTradeNo}</if>
+        <if test="matchInfo.matchUserId != null"> AND MATCH_USER_ID = #{matchInfo.matchUserId}</if>
+        <if test="matchInfo.matchUserName != null"> AND MATCH_USER_NAME = #{matchInfo.matchUserName}</if>
+        <if test="matchInfo.matchUserOutTradeNo != null"> AND MATCH_USER_OUT_TRADE_NO = #{matchInfo.matchUserOutTradeNo}</if>
+        <if test="matchInfo.matchUserTradeNo != null"> AND MATCH_USER_TRADE_NO = #{matchInfo.matchUserTradeNo}</if>
+        <if test="matchInfo.level != null"> AND LEVEL = #{matchInfo.level}</if>
+        <if test="matchInfo.billRemark != null"> AND BILL_REMARK = #{matchInfo.billRemark}</if>
+        <if test="matchInfo.tableId != null"> AND TABLE_ID = #{matchInfo.tableId}</if>
+        <if test="matchInfo.tableCode != null"> AND TABLE_CODE = #{matchInfo.tableCode}</if>
+        <if test="matchInfo.startDate != null"> AND START_DATE = #{matchInfo.startDate}</if>
+        <if test="matchInfo.useTime != null"> AND USE_TIME = #{matchInfo.useTime}</if>
+        <if test="matchInfo.status != null"> AND STATUS = #{matchInfo.status}</if>
+        <if test="matchInfo.createDate != null"> AND CREATE_DATE = #{matchInfo.createDate}</if>
+        <if test="matchInfo.createUser != null"> AND CREATE_USER = #{matchInfo.createUser}</if>
+        <if test="matchInfo.updateDate != null"> AND UPDATE_DATE = #{matchInfo.updateDate}</if>
+        <if test="matchInfo.updateUser != null"> AND UPDATE_USER = #{matchInfo.updateUser}</if>
+    </delete>
+<!--
+ //批量根据id更新信息
+    int updateMatchInfoByIdBatch(@Param("matchInfo") MatchInfo matchInfo,List<String> ids);
+-->
+    <update id="updateMatchInfoByIdBatch">
+        UPDATE MATCH_INFO
+        <set>
+            <if test="matchInfo.billReserveId != null">BILL_RESERVE_ID = #{matchInfo.billReserveId},</if>
+            <if test="matchInfo.billUserId != null">BILL_USER_ID = #{matchInfo.billUserId},</if>
+            <if test="matchInfo.billUserName != null">BILL_USER_NAME = #{matchInfo.billUserName},</if>
+            <if test="matchInfo.billUserOutTradeNo != null">BILL_USER_OUT_TRADE_NO = #{matchInfo.billUserOutTradeNo},</if>
+            <if test="matchInfo.billUserTradeNo != null">BILL_USER_TRADE_NO = #{matchInfo.billUserTradeNo},</if>
+            <if test="matchInfo.matchUserId != null">MATCH_USER_ID = #{matchInfo.matchUserId},</if>
+            <if test="matchInfo.matchUserName != null">MATCH_USER_NAME = #{matchInfo.matchUserName},</if>
+            <if test="matchInfo.matchUserOutTradeNo != null">MATCH_USER_OUT_TRADE_NO = #{matchInfo.matchUserOutTradeNo},</if>
+            <if test="matchInfo.matchUserTradeNo != null">MATCH_USER_TRADE_NO = #{matchInfo.matchUserTradeNo},</if>
+            <if test="matchInfo.level != null">LEVEL = #{matchInfo.level},</if>
+            <if test="matchInfo.billRemark != null">BILL_REMARK = #{matchInfo.billRemark},</if>
+            <if test="matchInfo.tableId != null">TABLE_ID = #{matchInfo.tableId},</if>
+            <if test="matchInfo.tableCode != null">TABLE_CODE = #{matchInfo.tableCode},</if>
+            <if test="matchInfo.startDate != null">START_DATE = #{matchInfo.startDate},</if>
+            <if test="matchInfo.useTime != null">USE_TIME = #{matchInfo.useTime},</if>
+            <if test="matchInfo.status != null">STATUS = #{matchInfo.status},</if>
+            <if test="matchInfo.createDate != null">CREATE_DATE = #{matchInfo.createDate},</if>
+            <if test="matchInfo.createUser != null">CREATE_USER = #{matchInfo.createUser},</if>
+            <if test="matchInfo.updateDate != null">UPDATE_DATE = #{matchInfo.updateDate},</if>
+            <if test="matchInfo.updateUser != null">UPDATE_USER = #{matchInfo.updateUser},</if>
+            <if test="matchInfo.billUserNeedPayAmt != null">BILL_USER_NEED_PAY_AMT = #{matchInfo.billUserNeedPayAmt},</if>
+            <if test="matchInfo.matchUserNeedPayAmt != null">MATCH_USER_NEED_PAY_AMT = #{matchInfo.matchUserNeedPayAmt}</if>
+        </set>
+        where  guid in (
+        <foreach collection="ids" separator="," item="id">
+            #{id}
+        </foreach>
+        )
+    </update>
+<!--
+
+    List<MatchInfo> getMatchInfoListByIds(@Param("ids") List<String> ids);
+-->
+    <select id="getMatchInfoListByIds" resultMap="baseMatchInfo">
+        SELECT  * FROM  MATCH_INFO where  guid in
+        (
+        <foreach collection="ids" separator="," item="id">
+            #{id}
+        </foreach>
+        )
+    </select>
+<!--
+  //将匹配用户的信息置空,同时状态设置为匹配中
+    int setMatchingUserNull(@Param("ids") List<String> ids);
+-->
+    <update id="setMatchingUserNull">
+        update  MATCH_INFO set
+        MATCH_USER_ID = null ,
+        MATCH_USER_NAME = null ,
+        MATCH_USER_OUT_TRADE_NO = null,
+        MATCH_USER_TRADE_NO = null,
+        STATUS = 0
+        where guid in (
+        <foreach collection="ids" separator="," item="id">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+<!--
+  //查询用于展示给全部用户的球友匹配单信息
+    List<MatchInfo> getUserSelectMatchInfoList(@Param("matchInfo") MatchInfo matchInfo);
+-->
+    <select id="getUserSelectMatchInfoList" resultMap="baseMatchInfo">
+          SELECT  * FROM  MATCH_INFO WHERE  1=1
+          AND STR_TO_DATE(START_DATE ,'%Y-%m-%d %H:%i:%s') > NOW()
+            <if test="matchInfo.billUserId!=null">
+                AND  BILL_USER_ID != #{matchInfo.billUserId}
+            </if>
+
+
+        <if test="matchInfo.guid!=null">
+            AND  GUID = #{matchInfo.guid}
+        </if>
+        <if test="matchInfo.billReserveId!=null">
+            AND  BILL_RESERVE_ID = #{matchInfo.billReserveId}
+        </if>
+        <if test="matchInfo.matchUserId!=null">
+            AND  MATCH_USER_ID = #{matchInfo.matchUserId}
+        </if>
+        <if test="matchInfo.level!=null">
+            AND  LEVEL = #{matchInfo.level}
+        </if>
+        <if test="matchInfo.status!=null">
+            AND  STATUS = #{matchInfo.status}
+        </if>
+        <if test="matchInfo.processStartDate!=null">
+            AND  PROCESS_START_DATE = #{matchInfo.processStartDate}
+        </if>
+        <if test="matchInfo.matchUserOutTradeNo != null">
+            AND MATCH_USER_OUT_TRADE_NO = #{matchInfo.matchUserOutTradeNo}
+        </if>
+        <if test="matchInfo.matchUserTradeNo != null">
+            AND MATCH_USER_TRADE_NO = #{matchInfo.matchUserTradeNo}
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,280 @@
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dahboard</title>
+    <!-- Google Font: Source Sans Pro -->
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+    <!-- Ionicons -->
+    <link rel="stylesheet"
+          href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet"
+          th:href="@{/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css}">
+    <!-- iCheck -->
+    <link rel="stylesheet"
+          th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+    <!-- JQVMap -->
+    <link rel="stylesheet" th:href="@{/plugins/jqvmap/jqvmap.min.css}">
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet"
+          th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+    <!-- Daterange picker -->
+    <link rel="stylesheet"
+          th:href="@{/plugins/daterangepicker/daterangepicker.css}">
+    <!-- summernote -->
+    <link rel="stylesheet" th:href="@{/plugins/summernote/summernote-bs4.min.css}">
+</head>
+
+<body class="sidebar-mini layout-fixed" style="height: auto;">
+<div class="wrapper">
+    <!--		引入左侧主菜单和导航栏-->
+    <!-- Navbar 导航栏-->
+    <div th:insert="includes/navigation :: navigation"></div>
+    <!-- /.navbar 左侧主菜单-->
+    <!-- Main Sidebar Container -->
+    <div th:insert="includes/side_bar :: side_bar"></div>
+    <!-- Content Wrapper. Contains page content -->
+
+
+
+    <!--页面主要内容-->
+    <div class="content-wrapper" style="min-height: 36px;">
+        <!-- Content Header (Page header) 页面头部内容 -->
+        <div class="content-header">
+            <!--				使用栅格系统-->
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Dashboard</h1>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active">苏小白的测试界面</li>
+                        </ol>
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content 页面中部内容-->
+        <section class="content">
+            <div class="container-fluid">
+                <!-- Small boxes (Stat box)  快速菜单页面-->
+                <div class="row">
+                    <div class="col-lg-3 col-6">
+                        <!-- small box  小型盒子-->
+                        <div class="small-box bg-info">
+                            <div class="ribbon-wrapper">
+                                <div class="ribbon bg-primary">
+                                    开放中
+                                </div>
+                            </div>
+                            <div class="inner">
+                                <h3 th:text="${orders}"></h3>
+                                <p>场馆预订</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-share"></i>
+                            </div>
+                            <a th:href="@{/dashboard}" class="small-box-footer">查看更多<i
+                                    class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-success">
+                            <div class="ribbon-wrapper">
+                                <div class="ribbon bg-primary">
+                                    火热预定中
+                                </div>
+                            </div>
+                            <div class="inner">
+                                <h3 th:text="${clients}">
+
+                                </h3>
+
+                                <p>我的预订</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-stats-bars"></i>
+                            </div>
+                            <a th:href="@{/orders/manager/}"class="small-box-footer">查看更多<i
+                                    class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-warning">
+                            <div class="inner">
+                                <h3 th:text="${machines}"> </h3>
+
+                                <p>个人信息</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-person-add"></i>
+                            </div>
+                            <a th:href="@{/user/manager}" class="small-box-footer">更多<i
+                                    class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-danger">
+                            <div class="inner">
+                                <h3 th:text="${employees}"></h3>
+
+                                <p>球友匹配板</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-pie-graph"></i>
+                            </div>
+                            <a th:href="@{/playerMatching/}" class="small-box-footer">More info <i
+                                    class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+                </div>
+                <!-- /.row -->
+<!--                <div class="row">-->
+<!--                    <div class="col-lg-8">-->
+<!--                        <div class="flex-md-row mb-4 box-shadow h-xl-300">-->
+<!--                            <div class="mb-3 d-flex align-items-center border-info flex-grow-1" style="border: 1px solid black">-->
+<!--                                <img height="150" src="http://localhost:8000//uploadFile/2024/04/15/267f523b-add0-48ea-a024-58253ed33193.png">-->
+<!--                                <div class="pl-3">-->
+<!--                                    <h2 class="mb-2 h6 font-weight-bold">-->
+<!--                                        <a class="text-dark" href="./article.html">1号桌</a>-->
+<!--                                    </h2>-->
+<!--                                    <div class="card-text text-muted small">发布用户：</div>-->
+<!--                                    <div class="card-text text-muted small">-->
+<!--                                        技术等级：-->
+<!--                                    </div>-->
+<!--                                    <div class="card-text text-muted small">-->
+<!--                                        使用日期：-->
+<!--                                    </div>-->
+<!--                                    <div class="card-text text-muted small">-->
+<!--                                        使用时长(小时)：-->
+<!--                                    </div>-->
+<!--                                    <div class="card-text text-muted small">-->
+<!--                                        状态：-->
+<!--                                    </div>-->
+<!--                                    <small class="text-muted">Dec 12 &middot; 5 min read</small>-->
+<!--                                </div>-->
+<!--                                <div class="pl-3">-->
+<!--                                    <div class="card-text text-muted small">-->
+<!--                                       备注：-->
+<!--                                    </div>-->
+<!--                                   <textarea style=" height: 100px;overflow-y: auto;"></textarea>-->
+<!--                                </div>-->
+<!--                                <div class="pl-3">-->
+<!--                                    <div class="card-text text-muted small">-->
+<!--                                        <a href="#" class="btn btn-primary apply_matching_btn btn-sm">匹配</a>-->
+<!--                                    </div>-->
+<!--                                    <div class="card-text text-muted small">-->
+<!--                                        <button type="button" class="btn btn-outline-info btn-sm" style="margin-top: 10px">聊一聊</button>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="mb-3 d-flex align-items-center">-->
+<!--                                <img height="80" src="http://localhost:8000//uploadFile/pingpong.jpg">-->
+<!--                                <div class="pl-3">-->
+<!--                                    <h2 class="mb-2 h6 font-weight-bold">-->
+<!--                                        <a class="text-dark" href="./article.html">Underwater museum brings hope to Lake Titicaca</a>-->
+<!--                                    </h2>-->
+<!--                                    <div class="card-text text-muted small">-->
+<!--                                        Jake Bittle in LOVE/HATE-->
+<!--                                    </div>-->
+<!--                                    <small class="text-muted">Dec 12 &middot; 5 min read</small>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="mb-3 d-flex align-items-center">-->
+<!--                                <img height="80" src="http://localhost:8000//uploadFile/pingpong.jpg">-->
+<!--                                <div class="pl-3">-->
+<!--                                    <h2 class="mb-2 h6 font-weight-bold">-->
+<!--                                        <a class="text-dark" href="./article.html">Sun-skimming probe starts calling home</a>-->
+<!--                                    </h2>-->
+<!--                                    <div class="card-text text-muted small">-->
+<!--                                        Jake Bittle in LOVE/HATE-->
+<!--                                    </div>-->
+<!--                                    <small class="text-muted">Dec 12 &middot; 5 min read</small>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+            </div>
+            <!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+    </div>
+
+    <!--    引入系统公告 common_system_notice_modal-->
+    <div th:insert="includes/system_notice :: common_system_notice_modal"></div>
+    <!-- /.content-wrapper -->
+    <!-- Control Sidebar -->
+    <div th:insert="includes/control_sidebar :: control_sidebar"></div>
+    <!-- /.control-sidebar -->
+    <!-- Main Footer -->
+    <!--		引入页脚内容-->
+    <div th:insert="includes/footer :: footer"></div>
+</div>
+<!-- ./wrapper -->
+<!-- REQUIRED SCRIPTS -->
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script th:src="@{/plugins/jquery-ui/jquery-ui.min.js}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge('uibutton', $.ui.button)
+</script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- ChartJS -->
+<script th:src="@{/plugins/chart.js/Chart.min.js}"></script>
+<!-- Sparkline -->
+
+<!-- JQVMap -->
+<script th:src="@{/plugins/jqvmap/jquery.vmap.min.js}"></script>
+<script th:src="@{/plugins/jqvmap/maps/jquery.vmap.usa.js}"></script>
+<!-- jQuery Knob Chart -->
+<script th:src="@{/plugins/jquery-knob/jquery.knob.min.js}"></script>
+<!-- daterangepicker -->
+<script th:src="@{/plugins/moment/moment.min.js}"></script>
+<script th:src="@{/plugins/daterangepicker/daterangepicker.js}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script
+        th:src="@{/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js}"></script>
+<!-- Summernote -->
+<script th:src="@{/plugins/summernote/summernote-bs4.min.js}"></script>
+<!-- overlayScrollbars -->
+<script
+        th:src="@{/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/dist/js/adminlte.js}"></script>
+<!-- AdminLTE for demo purposes -->
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script th:src="@{/dist/js/pages/dashboard.js}"></script>
+<!--通用的工具，必须加上-->
+<script th:src="@{/js/common_utils.js}"></script>
+<script th:src="@{/js/test/test.js}"></script>
+</body>
+</html>

@@ -1,0 +1,1059 @@
+/*
+ * adubytree  5.0 - jQuery adubytree
+ * Copyright (c) 2008, Crystal, shimingxy@163.com
+ * Dual licensed under the MIT and GPL licenses:
+ * http://www.opensource.org/licenses/mit-license.php
+ * http://www.gnu.org/licenses/gpl.html
+ * Date: 2011-05-30 rev 2
+ */
+  .adubytree{
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #666;
+	clear: left;
+	white-space: nowrap;
+}
+/*
+ *adubytree default basic themes
+ */
+.adubytreebasic{
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #666;
+	clear: left;
+	white-space: nowrap;
+}
+.adubytreebasic div{
+	white-space: nowrap;
+	
+}
+.adubytreebasic div.node {
+	height: 18px;
+	width:  18px;
+	border: 0px;
+	float: left;
+	vertical-align: middle;
+}
+
+.adubytreebasic div.Folder {
+	background:url(images/basic/Folder.gif) no-repeat;
+}
+.adubytreebasic div.FolderOpen {
+	background:url(images/basic/FolderOpen.gif) no-repeat;
+}
+.adubytreebasic div.Empty {
+	background:url(images/basic/Empty.gif) no-repeat;
+}
+.adubytreebasic div.Lminus {
+	background:url(images/basic/Lminus.gif) no-repeat;
+}
+.adubytreebasic div.Tminus {
+	background:url(images/basic/Tminus.gif) no-repeat;
+}
+.adubytreebasic div.Lplus {
+	background:url(images/basic/Lplus.gif) no-repeat;
+}
+.adubytreebasic div.Tplus {
+	background:url(images/basic/Tplus.gif) no-repeat;
+}
+.adubytreebasic div.I {
+	background:url(images/basic/I.gif) no-repeat;
+}
+.adubytreebasic div.L{
+	background:url(images/basic/L.gif) no-repeat;
+}
+.adubytreebasic div.T{
+	background:url(images/basic/T.gif) no-repeat;
+}
+.adubytreebasic div.Leaf{
+	background:url(images/basic/Leaf.gif) no-repeat;
+}
+.adubytreebasic div.stOpen{
+	background:url(images/basic/stOpen.gif) no-repeat;
+}
+.adubytreebasic div.stClose{
+	background:url(images/basic/stClose.gif) no-repeat;
+}
+.adubytreebasic div.loading{
+	background:url(images/basic/loading.gif) no-repeat;
+}
+.adubytreebasic div.checkBoxChecked{
+	background:url(images/basic/checked.gif) no-repeat;
+}
+.adubytreebasic div.checkBoxCheckedHover{
+	background:url(images/basic/checked_hover.gif) no-repeat;
+}
+.adubytreebasic div.checkBoxCheckedAll{
+	background:url(images/basic/checkedall.gif) no-repeat;
+}
+.adubytreebasic div.checkBoxCheckedAllHover{
+	background:url(images/basic/checkedall_hover.gif) no-repeat;
+}
+.adubytreebasic div.checkBoxUncheck{
+	background:url(images/basic/uncheck.gif) no-repeat;
+}
+.adubytreebasic div.checkBoxUncheckHover{
+	background:url(images/basic/uncheck_hover.gif) no-repeat;
+}
+.adubytreebasic a {
+	color: #333;
+	white-space: nowrap;
+	text-decoration: none;
+}
+.adubytreebasic a.node, .adubytreebasic a.selected {
+	font-weight : bold;
+	font-size: 11px;
+	padding: 1px 2px 1px 2px;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+.adubytreebasic a.node:hover, .adubytreebasic a.selected:hover {
+	font-size: 13px;
+	text-decoration: underline;
+}
+.adubytreebasic a.selected {
+	background-color: #0c2c88;
+	color: #ffffff;
+	text-decoration:1px solid silver;
+}
+.adubytreebasic .clip {
+	overflow: hidden;
+}
+
+/* Generic context menu styles */
+.contextMenu {
+	position: absolute;
+	width: 70px;
+	z-index: 99999;
+	border: solid 1px #CCC;
+	background: #EEE;
+	padding: 0px;
+	margin: 0px;
+	display: none;
+}
+
+.contextMenu LI {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.contextMenu A {
+	color: #333;
+	text-decoration: none;
+	display: block;
+	font-size: 12px;
+	line-height: 20px;
+	height: 20px;
+	background-position: 6px center;
+	background-repeat: no-repeat;
+	outline: none;
+	padding: 1px 5px;
+	padding-left: 28px;
+}
+
+.contextMenu LI.hover A {
+	color: #FFF;
+	background-color: #3399FF;
+}
+
+.contextMenu LI.disabled A {
+	color: #AAA;
+	cursor: default;
+}
+
+.contextMenu LI.hover.disabled A {
+	background-color: transparent;
+}
+
+.contextMenu LI.separator {
+	border-top: solid 1px #CCC;
+}
+
+/*
+	Adding Icons
+	
+	You can add icons to the context menu by adding
+	classes to the respective LI element(s)
+*/
+.contextMenu LI.new A { background-image: url(images/basic/page_white_new.png); }
+.contextMenu LI.edit A { background-image: url(images/basic/page_white_edit.png); }
+.contextMenu LI.copy A { background-image: url(images/basic/page_white_copy.png); }
+.contextMenu LI.paste {display: none;}
+.contextMenu LI.paste A { background-image: url(images/basic/page_white_paste.png);}
+.contextMenu LI.move A { background-image: url(images/basic/cut.png); }
+.contextMenu LI.movetochild { display: none;}
+.contextMenu LI.movetonext {  display: none;}
+.contextMenu LI.movetochild A { background-image: url(images/basic/door.png); }
+.contextMenu LI.movetonext A { background-image: url(images/basic/door.png);}
+.contextMenu LI.delete A { background-image: url(images/basic/page_white_delete.png); }
+
+/*
+ *books themes
+ */
+
+.adubytreebooks{
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #666;
+	clear: left;
+	white-space: nowrap;
+}
+.adubytreebooks div{
+	white-space: nowrap;
+	
+}
+.adubytreebooks div.node {
+	height: 18px;
+	width:  18px;
+	border: 0px;
+	float: left;
+	vertical-align: middle;
+}
+
+.adubytreebooks div.Folder {
+	background:url(images/books/Folder.gif) no-repeat;
+}
+.adubytreebooks div.FolderOpen {
+	background:url(images/books/FolderOpen.gif) no-repeat;
+}
+.adubytreebooks div.Empty {
+	background:url(images/books/Empty.gif) no-repeat;
+}
+.adubytreebooks div.Lminus {
+	background:url(images/books/Lminus.gif) no-repeat;
+}
+.adubytreebooks div.Tminus {
+	background:url(images/books/Tminus.gif) no-repeat;
+}
+.adubytreebooks div.Lplus {
+	background:url(images/books/Lplus.gif) no-repeat;
+}
+.adubytreebooks div.Tplus {
+	background:url(images/books/Tplus.gif) no-repeat;
+}
+.adubytreebooks div.I {
+	background:url(images/books/I.gif) no-repeat;
+}
+.adubytreebooks div.L{
+	background:url(images/books/L.gif) no-repeat;
+}
+.adubytreebooks div.T{
+	background:url(images/books/T.gif) no-repeat;
+}
+.adubytreebooks div.Leaf{
+	background:url(images/books/Leaf.gif) no-repeat;
+}
+.adubytreebooks div.stOpen{
+	background:url(images/books/stOpen.gif) no-repeat;
+}
+.adubytreebooks div.stClose{
+	background:url(images/books/stClose.gif) no-repeat;
+}
+.adubytreebooks div.loading{
+	background:url(images/books/loading.gif) no-repeat;
+}
+.adubytreebooks div.checkBoxChecked{
+	background:url(images/books/checked.gif) no-repeat;
+}
+.adubytreebooks div.checkBoxCheckedHover{
+	background:url(images/books/checked_hover.gif) no-repeat;
+}
+.adubytreebooks div.checkBoxCheckedAll{
+	background:url(images/books/checkedall.gif) no-repeat;
+}
+.adubytreebooks div.checkBoxCheckedAllHover{
+	background:url(images/books/checkedall_hover.gif) no-repeat;
+}
+.adubytreebooks div.checkBoxUncheck{
+	background:url(images/books/uncheck.gif) no-repeat;
+}
+.adubytreebooks div.checkBoxUncheckHover{
+	background:url(images/books/uncheck_hover.gif) no-repeat;
+}
+.adubytreebooks a {
+	color: #333;
+	white-space: nowrap;
+	text-decoration: none;
+}
+.adubytreebooks a.node, .adubytreebooks a.selected {
+	font-weight : bold;
+	font-size: 11px;
+	padding: 1px 2px 1px 2px;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+.adubytreebooks a.node:hover, .adubytreebooks a.selected:hover {
+	font-size: 13px;
+	text-decoration: underline;
+}
+.adubytreebooks a.selected {
+	background-color: #0c2c88;
+	color: #ffffff;
+	text-decoration:1px solid silver;
+}
+.adubytreebooks .clip {
+	overflow: hidden;
+}
+
+/* Generic context menu styles */
+.contextMenu {
+	position: absolute;
+	width: 70px;
+	z-index: 99999;
+	border: solid 1px #CCC;
+	background: #EEE;
+	padding: 0px;
+	margin: 0px;
+	display: none;
+}
+
+.contextMenu LI {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.contextMenu A {
+	color: #333;
+	text-decoration: none;
+	display: block;
+	font-size: 12px;
+	line-height: 20px;
+	height: 20px;
+	background-position: 6px center;
+	background-repeat: no-repeat;
+	outline: none;
+	padding: 1px 5px;
+	padding-left: 28px;
+}
+
+.contextMenu LI.hover A {
+	color: #FFF;
+	background-color: #3399FF;
+}
+
+.contextMenu LI.disabled A {
+	color: #AAA;
+	cursor: default;
+}
+
+.contextMenu LI.hover.disabled A {
+	background-color: transparent;
+}
+
+.contextMenu LI.separator {
+	border-top: solid 1px #CCC;
+}
+
+/*
+	Adding Icons
+	
+	You can add icons to the context menu by adding
+	classes to the respective LI element(s)
+*/
+.contextMenu LI.new A { background-image: url(images/books/page_white_new.png); }
+.contextMenu LI.edit A { background-image: url(images/books/page_white_edit.png); }
+.contextMenu LI.copy A { background-image: url(images/books/page_white_copy.png); }
+.contextMenu LI.paste {display: none;}
+.contextMenu LI.paste A { background-image: url(images/books/page_white_paste.png);}
+.contextMenu LI.move A { background-image: url(images/books/cut.png); }
+.contextMenu LI.movetochild { display: none;}
+.contextMenu LI.movetonext {  display: none;}
+.contextMenu LI.movetochild A { background-image: url(images/books/door.png); }
+.contextMenu LI.movetonext A { background-image: url(images/books/door.png);}
+.contextMenu LI.delete A { background-image: url(images/books/page_white_delete.png); }
+
+
+/*
+ *org themes
+ */
+
+.adubytreeorg{
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #666;
+	clear: left;
+	white-space: nowrap;
+}
+.adubytreeorg div{
+	white-space: nowrap;
+	
+}
+.adubytreeorg div.node {
+	height: 18px;
+	width:  18px;
+	border: 0px;
+	float: left;
+	vertical-align: middle;
+}
+
+.adubytreeorg div.Folder {
+	background:url(images/org/Folder.gif) no-repeat;
+}
+.adubytreeorg div.FolderOpen {
+	background:url(images/org/FolderOpen.gif) no-repeat;
+}
+.adubytreeorg div.Empty {
+	background:url(images/org/Empty.gif) no-repeat;
+}
+.adubytreeorg div.Lminus {
+	background:url(images/org/Lminus.gif) no-repeat;
+}
+.adubytreeorg div.Tminus {
+	background:url(images/org/Tminus.gif) no-repeat;
+}
+.adubytreeorg div.Lplus {
+	background:url(images/org/Lplus.gif) no-repeat;
+}
+.adubytreeorg div.Tplus {
+	background:url(images/org/Tplus.gif) no-repeat;
+}
+.adubytreeorg div.I {
+	background:url(images/org/I.gif) no-repeat;
+}
+.adubytreeorg div.L{
+	background:url(images/org/L.gif) no-repeat;
+}
+.adubytreeorg div.T{
+	background:url(images/org/T.gif) no-repeat;
+}
+.adubytreeorg div.Leaf{
+	background:url(images/org/Leaf.gif) no-repeat;
+}
+.adubytreeorg div.stOpen{
+	background:url(images/org/stOpen.gif) no-repeat;
+}
+.adubytreeorg div.stClose{
+	background:url(images/org/stClose.gif) no-repeat;
+}
+.adubytreeorg div.loading{
+	background:url(images/org/loading.gif) no-repeat;
+}
+.adubytreeorg div.checkBoxChecked{
+	background:url(images/org/checked.gif) no-repeat;
+}
+.adubytreeorg div.checkBoxCheckedHover{
+	background:url(images/org/checked_hover.gif) no-repeat;
+}
+.adubytreeorg div.checkBoxCheckedAll{
+	background:url(images/org/checkedall.gif) no-repeat;
+}
+.adubytreeorg div.checkBoxCheckedAllHover{
+	background:url(images/org/checkedall_hover.gif) no-repeat;
+}
+.adubytreeorg div.checkBoxUncheck{
+	background:url(images/org/uncheck.gif) no-repeat;
+}
+.adubytreeorg div.checkBoxUncheckHover{
+	background:url(images/org/uncheck_hover.gif) no-repeat;
+}
+.adubytreeorg a {
+	color: #333;
+	white-space: nowrap;
+	text-decoration: none;
+}
+.adubytreeorg a.node, .adubytreeorg a.selected {
+	font-weight : bold;
+	font-size: 11px;
+	padding: 1px 2px 1px 2px;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+.adubytreeorg a.node:hover, .adubytreeorg a.selected:hover {
+	font-size: 13px;
+	text-decoration: underline;
+}
+.adubytreeorg a.selected {
+	background-color: #0c2c88;
+	color: #ffffff;
+	text-decoration:1px solid silver;
+}
+.adubytreeorg .clip {
+	overflow: hidden;
+}
+
+/* Generic context menu styles */
+.contextMenu {
+	position: absolute;
+	width: 70px;
+	z-index: 99999;
+	border: solid 1px #CCC;
+	background: #EEE;
+	padding: 0px;
+	margin: 0px;
+	display: none;
+}
+
+.contextMenu LI {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.contextMenu A {
+	color: #333;
+	text-decoration: none;
+	display: block;
+	font-size: 12px;
+	line-height: 20px;
+	height: 20px;
+	background-position: 6px center;
+	background-repeat: no-repeat;
+	outline: none;
+	padding: 1px 5px;
+	padding-left: 28px;
+}
+
+.contextMenu LI.hover A {
+	color: #FFF;
+	background-color: #3399FF;
+}
+
+.contextMenu LI.disabled A {
+	color: #AAA;
+	cursor: default;
+}
+
+.contextMenu LI.hover.disabled A {
+	background-color: transparent;
+}
+
+.contextMenu LI.separator {
+	border-top: solid 1px #CCC;
+}
+
+/*
+	Adding Icons
+	
+	You can add icons to the context menu by adding
+	classes to the respective LI element(s)
+*/
+.contextMenu LI.new A { background-image: url(images/org/page_white_new.png); }
+.contextMenu LI.edit A { background-image: url(images/org/page_white_edit.png); }
+.contextMenu LI.copy A { background-image: url(images/org/page_white_copy.png); }
+.contextMenu LI.paste {display: none;}
+.contextMenu LI.paste A { background-image: url(images/org/page_white_paste.png);}
+.contextMenu LI.move A { background-image: url(images/org/cut.png); }
+.contextMenu LI.movetochild { display: none;}
+.contextMenu LI.movetonext {  display: none;}
+.contextMenu LI.movetochild A { background-image: url(images/org/door.png); }
+.contextMenu LI.movetonext A { background-image: url(images/org/door.png);}
+.contextMenu LI.delete A { background-image: url(images/org/page_white_delete.png); }
+
+/*
+ *orguser themes
+ */
+.adubytreeorguser{
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #666;
+	clear: left;
+	white-space: nowrap;
+}
+.adubytreeorguser div{
+	white-space: nowrap;
+	
+}
+.adubytreeorguser div.node {
+	height: 18px;
+	width:  18px;
+	border: 0px;
+	float: left;
+	vertical-align: middle;
+}
+
+.adubytreeorguser div.Folder {
+	background:url(images/orguser/Folder.gif) no-repeat;
+}
+.adubytreeorguser div.FolderOpen {
+	background:url(images/orguser/FolderOpen.gif) no-repeat;
+}
+.adubytreeorguser div.Empty {
+	background:url(images/orguser/Empty.gif) no-repeat;
+}
+.adubytreeorguser div.Lminus {
+	background:url(images/orguser/Lminus.gif) no-repeat;
+}
+.adubytreeorguser div.Tminus {
+	background:url(images/orguser/Tminus.gif) no-repeat;
+}
+.adubytreeorguser div.Lplus {
+	background:url(images/orguser/Lplus.gif) no-repeat;
+}
+.adubytreeorguser div.Tplus {
+	background:url(images/orguser/Tplus.gif) no-repeat;
+}
+.adubytreeorguser div.I {
+	background:url(images/orguser/I.gif) no-repeat;
+}
+.adubytreeorguser div.L{
+	background:url(images/orguser/L.gif) no-repeat;
+}
+.adubytreeorguser div.T{
+	background:url(images/orguser/T.gif) no-repeat;
+}
+.adubytreeorguser div.Leaf{
+	background:url(images/orguser/Leaf.gif) no-repeat;
+}
+.adubytreeorguser div.stOpen{
+	background:url(images/orguser/stOpen.gif) no-repeat;
+}
+.adubytreeorguser div.stClose{
+	background:url(images/orguser/stClose.gif) no-repeat;
+}
+.adubytreeorguser div.loading{
+	background:url(images/orguser/loading.gif) no-repeat;
+}
+.adubytreeorguser div.checkBoxChecked{
+	background:url(images/orguser/checked.gif) no-repeat;
+}
+.adubytreeorguser div.checkBoxCheckedHover{
+	background:url(images/orguser/checked_hover.gif) no-repeat;
+}
+.adubytreeorguser div.checkBoxCheckedAll{
+	background:url(images/orguser/checkedall.gif) no-repeat;
+}
+.adubytreeorguser div.checkBoxCheckedAllHover{
+	background:url(images/orguser/checkedall_hover.gif) no-repeat;
+}
+.adubytreeorguser div.checkBoxUncheck{
+	background:url(images/orguser/uncheck.gif) no-repeat;
+}
+.adubytreeorguser div.checkBoxUncheckHover{
+	background:url(images/orguser/uncheck_hover.gif) no-repeat;
+}
+.adubytreeorguser a {
+	color: #333;
+	white-space: nowrap;
+	text-decoration: none;
+}
+.adubytreeorguser a.node, .adubytreeorguser a.selected {
+	font-weight : bold;
+	font-size: 11px;
+	padding: 1px 2px 1px 2px;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+.adubytreeorguser a.node:hover, .adubytreeorguser a.selected:hover {
+	font-size: 13px;
+	text-decoration: underline;
+}
+.adubytreeorguser a.selected {
+	background-color: #0c2c88;
+	color: #ffffff;
+	text-decoration:1px solid silver;
+}
+.adubytreeorguser .clip {
+	overflow: hidden;
+}
+
+/* Generic context menu styles */
+.contextMenu {
+	position: absolute;
+	width: 70px;
+	z-index: 99999;
+	border: solid 1px #CCC;
+	background: #EEE;
+	padding: 0px;
+	margin: 0px;
+	display: none;
+}
+
+.contextMenu LI {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.contextMenu A {
+	color: #333;
+	text-decoration: none;
+	display: block;
+	font-size: 12px;
+	line-height: 20px;
+	height: 20px;
+	background-position: 6px center;
+	background-repeat: no-repeat;
+	outline: none;
+	padding: 1px 5px;
+	padding-left: 28px;
+}
+
+.contextMenu LI.hover A {
+	color: #FFF;
+	background-color: #3399FF;
+}
+
+.contextMenu LI.disabled A {
+	color: #AAA;
+	cursor: default;
+}
+
+.contextMenu LI.hover.disabled A {
+	background-color: transparent;
+}
+
+.contextMenu LI.separator {
+	border-top: solid 1px #CCC;
+}
+
+/*
+	Adding Icons
+	You can add icons to the context menu by adding
+	classes to the respective LI element(s)
+*/
+.contextMenu LI.new A { background-image: url(images/orguser/page_white_new.png); }
+.contextMenu LI.edit A { background-image: url(images/orguser/page_white_edit.png); }
+.contextMenu LI.copy A { background-image: url(images/orguser/page_white_copy.png); }
+.contextMenu LI.paste {display: none;}
+.contextMenu LI.paste A { background-image: url(images/orguser/page_white_paste.png);}
+.contextMenu LI.move A { background-image: url(images/orguser/cut.png); }
+.contextMenu LI.movetochild { display: none;}
+.contextMenu LI.movetonext {  display: none;}
+.contextMenu LI.movetochild A { background-image: url(images/orguser/door.png); }
+.contextMenu LI.movetonext A { background-image: url(images/orguser/door.png);}
+.contextMenu LI.delete A { background-image: url(images/orguser/page_white_delete.png); }
+
+/*
+ *vista themes
+ */
+.adubytreevista{
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #666;
+	clear: left;
+	white-space: nowrap;
+}
+.adubytreevista div{
+	white-space: nowrap;
+	
+}
+.adubytreevista div.node {
+	height: 18px;
+	width:  18px;
+	border: 0px;
+	float: left;
+	vertical-align: middle;
+}
+
+.adubytreevista div.Folder {
+	background:url(images/vista/Folder.gif) no-repeat;
+}
+.adubytreevista div.FolderOpen {
+	background:url(images/vista/FolderOpen.gif) no-repeat;
+}
+.adubytreevista div.Empty {
+	background:url(images/vista/Empty.gif) no-repeat;
+}
+.adubytreevista div.Lminus {
+	background:url(images/vista/Lminus.gif) no-repeat;
+}
+.adubytreevista div.Tminus {
+	background:url(images/vista/Tminus.gif) no-repeat;
+}
+.adubytreevista div.Lplus {
+	background:url(images/vista/Lplus.gif) no-repeat;
+}
+.adubytreevista div.Tplus {
+	background:url(images/vista/Tplus.gif) no-repeat;
+}
+.adubytreevista div.I {
+	background:url(images/vista/I.gif) no-repeat;
+}
+.adubytreevista div.L{
+	background:url(images/vista/L.gif) no-repeat;
+}
+.adubytreevista div.T{
+	background:url(images/vista/T.gif) no-repeat;
+}
+.adubytreevista div.Leaf{
+	background:url(images/vista/Leaf.gif) no-repeat;
+}
+.adubytreevista div.stOpen{
+	background:url(images/vista/stOpen.gif) no-repeat;
+}
+.adubytreevista div.stClose{
+	background:url(images/vista/stClose.gif) no-repeat;
+}
+.adubytreevista div.loading{
+	background:url(images/vista/loading.gif) no-repeat;
+}
+.adubytreevista div.checkBoxChecked{
+	background:url(images/vista/checked.gif) no-repeat;
+}
+.adubytreevista div.checkBoxCheckedHover{
+	background:url(images/vista/checked_hover.gif) no-repeat;
+}
+.adubytreevista div.checkBoxCheckedAll{
+	background:url(images/vista/checkedall.gif) no-repeat;
+}
+.adubytreevista div.checkBoxCheckedAllHover{
+	background:url(images/vista/checkedall_hover.gif) no-repeat;
+}
+.adubytreevista div.checkBoxUncheck{
+	background:url(images/vista/uncheck.gif) no-repeat;
+}
+.adubytreevista div.checkBoxUncheckHover{
+	background:url(images/vista/uncheck_hover.gif) no-repeat;
+}
+.adubytreevista a {
+	color: #333;
+	white-space: nowrap;
+	text-decoration: none;
+}
+.adubytreevista a.node, .adubytreevista a.selected {
+	font-weight : bold;
+	font-size: 11px;
+	padding: 1px 2px 1px 2px;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+.adubytreevista a.node:hover, .adubytreevista a.selected:hover {
+	font-size: 13px;
+	text-decoration: underline;
+}
+.adubytreevista a.selected {
+	background-color: #0c2c88;
+	color: #ffffff;
+	text-decoration:1px solid silver;
+}
+.adubytreevista .clip {
+	overflow: hidden;
+}
+
+/* Generic context menu styles */
+.contextMenu {
+	position: absolute;
+	width: 100px;
+	z-index: 99999;
+	border: solid 1px #CCC;
+	background: #EEE;
+	padding: 0px;
+	margin: 0px;
+	display: none;
+}
+
+.contextMenu LI {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.contextMenu A {
+	color: #333;
+	text-decoration: none;
+	display: block;
+	font-size: 12px;
+	line-height: 20px;
+	height: 20px;
+	background-position: 6px center;
+	background-repeat: no-repeat;
+	outline: none;
+	padding: 1px 5px;
+	padding-left: 28px;
+}
+
+.contextMenu LI.hover A {
+	color: #FFF;
+	background-color: #3399FF;
+}
+
+.contextMenu LI.disabled A {
+	color: #AAA;
+	cursor: default;
+}
+
+.contextMenu LI.hover.disabled A {
+	background-color: transparent;
+}
+
+.contextMenu LI.separator {
+	border-top: solid 1px #CCC;
+}
+
+/*
+	Adding Icons
+	You can add icons to the context menu by adding
+	classes to the respective LI element(s)
+*/
+.contextMenu LI.new A { background-image: url(images/vista/page_white_new.png); }
+.contextMenu LI.edit A { background-image: url(images/vista/page_white_edit.png); }
+.contextMenu LI.copy A { background-image: url(images/vista/page_white_copy.png); }
+.contextMenu LI.paste {display: none;}
+.contextMenu LI.paste A { background-image: url(images/vista/page_white_paste.png);}
+.contextMenu LI.move A { background-image: url(images/vista/cut.png); }
+.contextMenu LI.movetochild { display: none;}
+.contextMenu LI.movetonext {  display: none;}
+.contextMenu LI.movetochild A { background-image: url(images/vista/door.png); }
+.contextMenu LI.movetonext A { background-image: url(images/vista/door.png);}
+.contextMenu LI.delete A { background-image: url(images/vista/page_white_delete.png); }
+
+
+/*
+ *sample themes
+ */
+.adubytreesample{
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #666;
+	clear: left;
+	white-space: nowrap;
+}
+.adubytreesample div{
+	white-space: nowrap;
+	
+}
+.adubytreesample div.node {
+	height: 18px;
+	width:  18px;
+	border: 0px;
+	float: left;
+	vertical-align: middle;
+}
+
+.adubytreesample div.Folder {
+	background:url(images/sample/Folder.gif) no-repeat;
+}
+.adubytreesample div.FolderOpen {
+	background:url(images/sample/FolderOpen.gif) no-repeat;
+}
+.adubytreesample div.Empty {
+	background:url(images/sample/Empty.gif) no-repeat;
+}
+.adubytreesample div.Lminus {
+	background:url(images/sample/Lminus.gif) no-repeat;
+}
+.adubytreesample div.Tminus {
+	background:url(images/sample/Tminus.gif) no-repeat;
+}
+.adubytreesample div.Lplus {
+	background:url(images/sample/Lplus.gif) no-repeat;
+}
+.adubytreesample div.Tplus {
+	background:url(images/sample/Tplus.gif) no-repeat;
+}
+.adubytreesample div.I {
+	background:url(images/sample/I.gif) no-repeat;
+}
+.adubytreesample div.L{
+	background:url(images/sample/L.gif) no-repeat;
+}
+.adubytreesample div.T{
+	background:url(images/sample/T.gif) no-repeat;
+}
+.adubytreesample div.Leaf{
+	background:url(images/sample/Leaf.gif) no-repeat;
+}
+.adubytreesample div.stOpen{
+	background:url(images/sample/stOpen.gif) no-repeat;
+}
+.adubytreesample div.stClose{
+	background:url(images/sample/stClose.gif) no-repeat;
+}
+.adubytreesample div.loading{
+	background:url(images/sample/loading.gif) no-repeat;
+}
+.adubytreesample div.checkBoxChecked{
+	background:url(images/sample/checked.gif) no-repeat;
+}
+.adubytreesample div.checkBoxCheckedHover{
+	background:url(images/sample/checked_hover.gif) no-repeat;
+}
+.adubytreesample div.checkBoxCheckedAll{
+	background:url(images/sample/checkedall.gif) no-repeat;
+}
+.adubytreesample div.checkBoxCheckedAllHover{
+	background:url(images/sample/checkedall_hover.gif) no-repeat;
+}
+.adubytreesample div.checkBoxUncheck{
+	background:url(images/sample/uncheck.gif) no-repeat;
+}
+.adubytreesample div.checkBoxUncheckHover{
+	background:url(images/sample/uncheck_hover.gif) no-repeat;
+}
+.adubytreesample a {
+	color: #333;
+	white-space: nowrap;
+	text-decoration: none;
+}
+.adubytreesample a.node, .adubytreesample a.selected {
+	font-weight : bold;
+	font-size: 11px;
+	padding: 1px 2px 1px 2px;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+.adubytreesample a.node:hover, .adubytreesample a.selected:hover {
+	font-size: 13px;
+	text-decoration: underline;
+}
+.adubytreesample a.selected {
+	background-color: #0c2c88;
+	color: #ffffff;
+	text-decoration:1px solid silver;
+}
+.adubytreesample .clip {
+	overflow: hidden;
+}
+
+/* Generic context menu styles */
+.contextMenu {
+	position: absolute;
+	width: 100px;
+	z-index: 99999;
+	border: solid 1px #CCC;
+	background: #EEE;
+	padding: 0px;
+	margin: 0px;
+	display: none;
+}
+
+.contextMenu LI {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.contextMenu A {
+	color: #333;
+	text-decoration: none;
+	display: block;
+	font-size: 12px;
+	line-height: 20px;
+	height: 20px;
+	background-position: 6px center;
+	background-repeat: no-repeat;
+	outline: none;
+	padding: 1px 5px;
+	padding-left: 28px;
+}
+
+.contextMenu LI.hover A {
+	color: #FFF;
+	background-color: #3399FF;
+}
+
+.contextMenu LI.disabled A {
+	color: #AAA;
+	cursor: default;
+}
+
+.contextMenu LI.hover.disabled A {
+	background-color: transparent;
+}
+
+.contextMenu LI.separator {
+	border-top: solid 1px #CCC;
+}
+
+/*
+	Adding Icons
+	You can add icons to the context menu by adding
+	classes to the respective LI element(s)
+*/
+.contextMenu LI.new A { background-image: url(images/sample/page_white_new.png); }
+.contextMenu LI.edit A { background-image: url(images/sample/page_white_edit.png); }
+.contextMenu LI.copy A { background-image: url(images/sample/page_white_copy.png); }
+.contextMenu LI.paste {display: none;}
+.contextMenu LI.paste A { background-image: url(images/sample/page_white_paste.png);}
+.contextMenu LI.move A { background-image: url(images/sample/cut.png); }
+.contextMenu LI.movetochild { display: none;}
+.contextMenu LI.movetonext {  display: none;}
+.contextMenu LI.movetochild A { background-image: url(images/sample/door.png); }
+.contextMenu LI.movetonext A { background-image: url(images/sample/door.png);}
+.contextMenu LI.delete A { background-image: url(images/sample/page_white_delete.png); }

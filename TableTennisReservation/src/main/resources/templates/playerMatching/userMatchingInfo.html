@@ -1,0 +1,312 @@
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>我的发布</title>
+    <!-- Google Font: Source Sans Pro -->
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet" th:href="@{/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css}">
+    <!-- iCheck -->
+    <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+    <!-- JQVMap -->
+    <link rel="stylesheet" th:href="@{/plugins/jqvmap/jqvmap.min.css}">
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" th:href="@{/plugins/daterangepicker/daterangepicker.css}">
+    <!-- summernote -->
+    <link rel="stylesheet" th:href="@{/plugins/summernote/summernote-bs4.min.css}">
+
+</head>
+<style>
+    .img_ball_table{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .table_img_container{
+        width: 300px;
+        height: 200px;
+    }
+    /* 日期组件css 定位i标签在input标签内 */
+    .daterange i {
+        position: absolute;
+        bottom: 10px;
+        right: 14px;
+        top: auto;
+        cursor: pointer;
+    }
+    .daterange {
+        position: relative;
+    }
+    /*备注文本框，设置固定高度*/
+    .billRemark {
+        height: 100px; /* 设置固定高度 */
+        overflow-y: auto; /* 添加垂直滚动条 */
+    }
+    /*将容器兼容子元素高度，防止子元素过多导致导航栏下拉有白边*/
+    .wrapper {
+        display: flex;
+        flex-direction: column; /* 垂直方向排列子元素 */
+        align-items: stretch; /* 子元素的高度与父容器相匹配 */
+    }
+</style>
+<script>
+    //获取请求域的内容作为全局变量
+    // var xx=[[${session.xx}]];//获取Session中的值
+    var base_url = '[[${sys_base_url}]]';
+    var img_url='[[${sys_img_url}]]';
+    var PAGE_NO=1;//当前页码
+</script>
+<body class="sidebar-mini layout-fixed" style="height: 100%; ">
+<div class="wrapper">
+    <!--		引入左侧主菜单和导航栏-->
+    <!-- Navbar 导航栏-->
+    <div th:insert="includes/navigation :: navigation"></div>
+    <!-- /.navbar 左侧主菜单-->
+    <!-- Main Sidebar Container -->
+    <div th:insert="includes/side_bar :: side_bar"></div>
+    <!-- Content Wrapper. Contains page content -->
+
+
+
+    <!--页面主要内容-->
+    <div class="content-wrapper" style="min-height: 36px;">
+        <!-- Content Header (Page header) 页面头部内容 -->
+        <div class="content-header">
+            <!--				使用栅格系统-->
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">我的发布信息</h1>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active">playerMatching</li>
+                        </ol>
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content 页面中部内容-->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-success" style="margin: 10px 10px" id="create_match_btn">用户匹配申请</button>
+                    </div>
+
+                </div>
+                <!--                工具栏-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <form id="selected_form">
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="code">球桌号</label>
+                                    <input type="text" name="code" class="form-control condition" id="code" placeholder="输入桌号">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="startDate">选择日期：</label>
+                                <input type="date" id="startDate" name="processStartDate" pattern="\d{4}-\d{2}-\d{2}" class="condition">
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="selected_form">状态：</label>
+                                <select  class="form-control status_select condition" name="status" id="status_select">
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- Small boxes (Stat box)展示匹配信息 -->
+<!--                <div class="row">-->
+<!--                    <div class="col-12">-->
+<!--                        <ul class="list-group list-group-horizontal" id="ball_view_ul">-->
+
+<!--                        </ul>-->
+<!--                        <nav aria-label="Page navigation example" class="page_nav">-->
+<!--                            <ul class="pagination" ></ul>-->
+<!--                        </nav>-->
+
+<!--                    </div>-->
+
+<!--                </div>-->
+                <!--                最新展示匹配信息方式：使用横向列表-->
+                <div class="row">
+                    <div class="col-lg-8">
+                        <nav aria-label="Page navigation example" class="page_nav">
+                            <ul class="pagination" ></ul>
+                        </nav>
+                        <div class="flex-md-row mb-4 box-shadow h-xl-300" id="match_info_view_div">
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
+                <!-- /.row (main row) -->
+            </div>
+            <!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+    </div>
+    <!--  模态框 start -->
+    <!-- Modal 修改匹配单的模态框-->
+    <div class="modal fade" id="myUpdateMatchInfoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myUpdateMatchInfoModalLabel">编辑信息</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label  class="col-sm-2 control-label">图片</label>
+                        <div class="table_img_container">
+                            <img src="http://localhost:8000/uploadFile/2024/01/01/4a93d05f-50ee-4ceb-be72-b1152c053d65.jpg" class="card-img-top img_ball_table" alt="...">
+                        </div>
+                    </div>
+                    <form class="form-horizontal" id="form_update_match_info">
+                        <!--                        保存当前操作的guid-->
+                        <input type="hidden" name="guid" class="guid" value="">
+                        <!--              put请求          -->
+                        <input type="hidden" name="_method" value="PUT">
+                        <div class="form-group col-md-4">
+                            <label for="level">技术等级：</label>
+                            <select id="level" class="form-control level" name="level">
+                                <option selected>请选择一个等级</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">备注</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control billRemark" id="billRemark" placeholder="填入匹配备注信息" name="billRemark"></textarea>
+                                <span  class="help-block"></span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary save_btn" >保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--    模态框 end-->
+    <!--  模态框 start -->
+    <!-- Modal 选择预订单的模态框-->
+    <div class="modal fade" id="myUpdateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myUpdateModalLabel">匹配操作</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col">匹配用户</th>
+                            <th scope="col">球桌编号</th>
+                            <th scope="col">使用时间</th>
+                            <th scope="col">时长</th>
+                            <th scope="col">金额</th>
+                            <th scope="col">状态</th>
+                            <th scope="col">#</th>
+                            <th scope="col">#</th>
+                        </tr>
+                        </thead>
+                        <tbody id="orders_tbody">
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-danger btn_ball_table_submit" id="btn_reject_submit">拒绝</button>
+                    <button type="button" class="btn btn-primary btn_ball_table_submit" id="btn_update_submit">同意</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--    模态框 end-->
+    <!-- /.content-wrapper -->
+    <!-- Control Sidebar -->
+    <div th:insert="includes/control_sidebar :: control_sidebar"></div>
+    <!--    引入消息提示 socket_message-->
+    <div th:insert="includes/webSocketMessage :: socket_message"></div>
+    <!-- /.control-sidebar -->
+    <!-- Main Footer -->
+    <!--		引入页脚内容-->
+<!--    <div th:insert="includes/footer :: footer"></div>-->
+</div>
+
+<!-- ./wrapper -->
+<!-- REQUIRED SCRIPTS -->
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script th:src="@{/plugins/jquery-ui/jquery-ui.min.js}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge('uibutton', $.ui.button);
+</script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- ChartJS -->
+<script th:src="@{/plugins/chart.js/Chart.min.js}"></script>
+<!-- Sparkline -->
+
+<!-- JQVMap -->
+<script th:src="@{/plugins/jqvmap/jquery.vmap.min.js}"></script>
+<script th:src="@{/plugins/jqvmap/maps/jquery.vmap.usa.js}"></script>
+<!-- jQuery Knob Chart -->
+<script th:src="@{/plugins/jquery-knob/jquery.knob.min.js}"></script>
+<!-- daterangepicker -->
+<script th:src="@{/plugins/moment/moment.min.js}"></script>
+<script th:src="@{/plugins/daterangepicker/daterangepicker.js}"></script>
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js"></script>-->
+<!--国产化日期选择器-->
+<script th:src="@{/plugins/daterangepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script th:src="@{/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js}"></script>
+<!-- Summernote -->
+<script th:src="@{/plugins/summernote/summernote-bs4.min.js}"></script>
+<!-- overlayScrollbars -->
+<script th:src="@{/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/dist/js/adminlte.js}"></script>
+<!-- AdminLTE for demo purposes -->
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script th:src="@{/dist/js/pages/dashboard.js}"></script>
+<!-- jQuery -->
+<!--自定义的js-->
+<script th:src="@{/js/playerMatching/userMatchingInfo.js}"></script>
+<!--消息js-->
+<script th:src="@{/js/user/message.js}"></script>
+<!--通用的工具，必须加上-->
+<script th:src="@{/js/common_utils.js}"></script>
+<!--基础数据，必须带上-->
+<script th:src="@{/js/base_data.js}"></script>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atsu.tabletennisreservation.mapper.MessageMapper">
+    <resultMap id="baseMessage" type="Message">
+        <result property="guid" column="GUID"></result>
+        <result property="originId" column="ORIGIN_ID"></result>
+        <result property="originName" column="ORIGIN_NAME"></result>
+        <result property="targetId" column="TARGET_ID"></result>
+        <result property="targetName" column="TARGET_NAME"></result>
+        <result property="type" column="TYPE"></result>
+        <result property="category" column="CATEGORY"></result>
+        <result property="value" column="VALUE"></result>
+        <result property="createTime" column="CREATE_TIME"></result>
+        <result property="isRead" column="IS_READ"></result>
+        <result property="processCreateDate" column="PROCESS_CREATE_DATE"></result>
+    </resultMap>
+<!--
+ //新增消息
+    int saveMessage(@Param("message") Message message);
+-->
+    <insert id="saveMessage">
+        INSERT INTO MESSAGE (
+        GUID, ORIGIN_ID, ORIGIN_NAME,
+        TARGET_ID, TARGET_NAME, TYPE,
+        CATEGORY, VALUE, CREATE_TIME,IS_READ)
+        VALUES (
+        #{message.guid},#{message.originId},#{message.originName},
+        #{message.targetId},#{message.targetName},#{message.type},
+        #{message.category},#{message.value},#{message.createTime},#{message.isRead});
+    </insert>
+<!--
+  //删除消息(根据条件删除)
+    int deleteMessage(@Param("message") Message message);
+-->
+    <delete id="deleteMessage">
+        delete  from  MESSAGE where  1=1
+        <if test="message.guid!=null">
+          AND  GUID = #{message.guid}
+        </if>
+        <if test="message.originId!=null">
+            AND  ORIGIN_ID = #{message.originId}
+        </if>
+        <if test="message.originName!=null">
+            AND ORIGIN_NAME = #{message.originName}
+        </if>
+        <if test="message.targetId!=null">
+            AND  TARGET_ID = #{message.targetId}
+        </if>
+        <if test="message.targetName!=null">
+            AND TARGET_NAME = #{message.targetName}
+        </if>
+        <if test="message.type!=null">
+            AND  TYPE = #{message.type}
+        </if>
+        <if test="message.category!=null">
+            AND   CATEGORY = #{message.category}
+        </if>
+
+        <if test="message.value!=null">
+            AND VALUE = #{message.value}
+        </if>
+        <if test="message.createTime!=null">
+            AND  CREATE_TIME = #{message.createTime}
+        </if>
+        <if test="message.isRead!=null">
+            AND  IS_READ = #{message.isRead}
+        </if>
+    </delete>
+<!--
+  //查询消息
+    List<Message> getMessageList(@Param("message") Message message);
+-->
+    <select id="getMessageList" resultMap="baseMessage">
+        select  * from  MESSAGE where  1=1
+        <if test="message.guid!=null">
+            AND  GUID = #{message.guid}
+        </if>
+        <if test="message.originId!=null">
+            AND  ORIGIN_ID = #{message.originId}
+        </if>
+        <if test="message.originName!=null">
+            AND ORIGIN_NAME = #{message.originName}
+        </if>
+        <if test="message.targetId!=null">
+            AND  TARGET_ID = #{message.targetId}
+        </if>
+        <if test="message.targetName!=null">
+            AND TARGET_NAME = #{message.targetName}
+        </if>
+        <if test="message.type!=null">
+            AND  TYPE = #{message.type}
+        </if>
+        <if test="message.category!=null">
+            AND   CATEGORY = #{message.category}
+        </if>
+
+        <if test="message.value!=null">
+            AND VALUE = #{message.value}
+        </if>
+        <if test="message.createTime!=null">
+            AND  CREATE_TIME like CONCAT(#{message.createTime},'%')
+        </if>
+        <if test="message.isRead!=null">
+            AND  IS_READ = #{message.isRead}
+        </if>
+        ORDER BY  STR_TO_DATE(CREATE_TIME , '%Y-%m-%d %H:%i:%s') DESC
+    </select>
+<!--
+  //更新消息
+    int updateMessageById(@Param("message") Message message);
+-->
+    <update id="updateMessageById">
+        update  MESSAGE
+        <set>
+            <if test="message.originId!=null">
+                  ORIGIN_ID = #{message.originId},
+            </if>
+            <if test="message.originName!=null">
+                 ORIGIN_NAME = #{message.originName},
+            </if>
+            <if test="message.targetId!=null">
+                  TARGET_ID = #{message.targetId},
+            </if>
+            <if test="message.targetName!=null">
+                 TARGET_NAME = #{message.targetName},
+            </if>
+            <if test="message.type!=null">
+                  TYPE = #{message.type},
+            </if>
+            <if test="message.category!=null">
+                   CATEGORY = #{message.category},
+            </if>
+
+            <if test="message.value!=null">
+                 VALUE = #{message.value},
+            </if>
+            <if test="message.isRead!=null">
+                  IS_READ = #{message.isRead},
+            </if>
+        </set>
+        where
+        GUID = #{message.guid}
+    </update>
+<!--
+  //批量更新消息
+    int updateMessageByIdBatch(@Param("message") Message message,@Param("ids") List<String> ids);
+-->
+    <update id="updateMessageByIdBatch">
+        update  MESSAGE
+        <set>
+            <if test="message.originId!=null">
+                ORIGIN_ID = #{message.originId},
+            </if>
+            <if test="message.originName!=null">
+                ORIGIN_NAME = #{message.originName},
+            </if>
+            <if test="message.targetId!=null">
+                TARGET_ID = #{message.targetId},
+            </if>
+            <if test="message.targetName!=null">
+                TARGET_NAME = #{message.targetName},
+            </if>
+            <if test="message.type!=null">
+                TYPE = #{message.type},
+            </if>
+            <if test="message.category!=null">
+                CATEGORY = #{message.category},
+            </if>
+
+            <if test="message.value!=null">
+                VALUE = #{message.value},
+            </if>
+            <if test="message.isRead!=null">
+                IS_READ = #{message.isRead},
+            </if>
+        </set>
+        where
+        GUID in
+        (
+        <foreach collection="ids" separator="," item="id">
+             #{id}
+        </foreach>
+        )
+    </update>
+<!--
+    //根据id批量删除消息,message为额外条件
+    int deleteMessageByIdBatch(@Param("message") Message message,@Param("ids") List<String> ids);
+-->
+    <delete id="deleteMessageByIdBatch">
+        DELETE  FROM  MESSAGE WHERE 1=1
+        AND GUID IN (
+        <foreach collection="ids" separator="," item="id">
+            #{id}
+        </foreach>
+        )
+        <if test="message.originId!=null">
+          AND  ORIGIN_ID = #{message.originId}
+        </if>
+        <if test="message.originName!=null">
+            AND  ORIGIN_NAME = #{message.originName}
+        </if>
+        <if test="message.targetId!=null">
+            AND TARGET_ID = #{message.targetId}
+        </if>
+        <if test="message.targetName!=null">
+            AND TARGET_NAME = #{message.targetName}
+        </if>
+        <if test="message.type!=null">
+            AND TYPE = #{message.type}
+        </if>
+        <if test="message.category!=null">
+            AND  CATEGORY = #{message.category}
+        </if>
+
+        <if test="message.value!=null">
+            AND  VALUE = #{message.value}
+        </if>
+        <if test="message.isRead!=null">
+            AND IS_READ = #{message.isRead}
+        </if>
+    </delete>
+<!--    //查询数量-->
+<!--    int getCount(@Param("message") Message message);
+-->
+    <select id="getCount" resultType="int">
+        SELECT  COUNT(1) FROM  MESSAGE WHERE 1=1
+        <if test="message.originId!=null">
+            AND  ORIGIN_ID = #{message.originId}
+        </if>
+        <if test="message.originName!=null">
+            AND  ORIGIN_NAME = #{message.originName}
+        </if>
+        <if test="message.targetId!=null">
+            AND TARGET_ID = #{message.targetId}
+        </if>
+        <if test="message.targetName!=null">
+            AND TARGET_NAME = #{message.targetName}
+        </if>
+        <if test="message.type!=null">
+            AND TYPE = #{message.type}
+        </if>
+        <if test="message.category!=null">
+            AND  CATEGORY = #{message.category}
+        </if>
+
+        <if test="message.value!=null">
+            AND  VALUE = #{message.value}
+        </if>
+        <if test="message.isRead!=null">
+            AND IS_READ = #{message.isRead}
+        </if>
+        <if test="message.processCreateDate!=null">
+            AND PROCESS_CREATE_DATE = #{message.processCreateDate}
+        </if>
+    </select>
+<!--
+    //查询id
+    List<String> getIds(@Param("message") Message message);
+-->
+    <select id="getIds" resultType="String">
+        SELECT  GUID FROM  MESSAGE WHERE  1=1
+        <if test="message.originId!=null">
+            AND  ORIGIN_ID = #{message.originId}
+        </if>
+        <if test="message.originName!=null">
+            AND  ORIGIN_NAME = #{message.originName}
+        </if>
+        <if test="message.targetId!=null">
+            AND TARGET_ID = #{message.targetId}
+        </if>
+        <if test="message.targetName!=null">
+            AND TARGET_NAME = #{message.targetName}
+        </if>
+        <if test="message.type!=null">
+            AND TYPE = #{message.type}
+        </if>
+        <if test="message.category!=null">
+            AND  CATEGORY = #{message.category}
+        </if>
+
+        <if test="message.value!=null">
+            AND  VALUE = #{message.value}
+        </if>
+        <if test="message.isRead!=null">
+            AND IS_READ = #{message.isRead}
+        </if>
+        <if test="message.processCreateDate!=null">
+            AND PROCESS_CREATE_DATE = #{message.processCreateDate}
+        </if>
+    </select>
+<!--
+   //设置消息已读
+    int setRead(@Param("message") Message message);
+-->
+    <update id="setRead">
+        UPDATE  MESSAGE SET  IS_READ = 1 WHERE  1=1
+            AND TARGET_ID = #{message.targetId}
+            AND TYPE = #{message.type}
+            AND CATEGORY = #{message.category}
+    </update>
+</mapper>

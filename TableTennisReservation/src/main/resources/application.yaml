@@ -1,0 +1,113 @@
+server:
+  port: 8000
+spring:
+  # 数据源配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.234.80:3306/table_tennis_system?characterEncoding=utf-8&serverTimezone=UTC&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true
+    username: root
+    password: root
+  # thymeleaf模板引擎
+  thymeleaf:
+    cache: false
+    encoding: UTF-8
+    suffix: .html
+    servlet:
+      content-type: text/html
+    prefix: classpath:/templates/
+  # 文件上传配置
+  servlet:
+    multipart:
+      enabled: true # 开启
+      file-size-threshold: 0
+      max-file-size: 1MB # 单个文件最大大小
+      max-request-size: 10MB # 多文件最大大小
+      resolve-lazily: false # 是否延迟解析
+  # springmvc配置
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true # 开启方法隐藏参数的获取,避免rest风格无法被后端解析
+  redis:
+    # Redis服务器地址
+    host: 192.168.234.85
+    # Redis服务器端口号
+    port: 6379
+    # 使用的数据库索引，默认是0
+    database: 0
+    # 连接超时时间
+    timeout: 2800000
+    # 设置密码
+    password: "123456"
+    lettuce:
+      pool:
+        # 最大阻塞等待时间，负数表示没有限制
+        max-wait: -1
+        # 连接池中的最大空闲连接
+        max-idle: 5
+        # 连接池中的最小空闲连接
+        min-idle: 0
+        # 连接池中最大连接数，负数表示没有限制
+        max-active: 20
+  # 邮箱配置
+  mail:
+    host: smtp.163.com
+    username: xxxxxxx@163.com
+    password: 邮箱密码
+    default-encoding: utf-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+  # spring boot内置线程池配置
+  task:
+    execution:
+      pool:
+        core-size: 10
+        max-size: 20
+        queue-capacity: 100
+        keep-alive: 60s
+# mybatis配置
+mybatis:
+  mapper-locations: classpath:/com/atsu/tabletennisreservation/mapper/*.xml
+  #  软件包的别名
+  type-aliases-package: com/atsu/tabletennisreservation/pojo
+# 分页插件
+pagehelper:
+  #指明数据库
+  helper-dialect: mysql
+  params: count=countSql
+  #为true pageNum<=0 时会查询第一页， pageNum>pages（超过总数时），会查询最后一页
+  reasonable: true
+  supportMethodsArguments: true
+page:
+  pageSize: 3 # 默认分页大小
+# 配置绑定相关
+upload:
+  # 获取上传的文件url映射
+  urlMapping: /uploadFile/**
+  prePath: /uploadFile/
+  # 上传文件物理存储路径
+  filePath: D:/GraduationDesignProject/upload/
+# Mybatis日志
+logging:
+  level:
+    com.atsu.tabletennisreservation.mapper: debug
+
+# 支付宝配置绑定类(暂时用不上)
+zfbpay:
+  isOpenPay: true
+# redis配置绑定
+redispro:
+  # 保存用户未支付订单前缀
+  userReserveKeySetPrefix: pre_reserve_
+# 系统业务自定义系统参数配置
+systemservice:
+  isVerifyReserve: true
+  # systemIpPort: sujinbin.natapp1.cc:80 # 系统ip+端口号，也可以写成内网穿透的域名,目前用于系统访问和webSocket连接
+  systemIpPort: localhost:8000 # 本地访问，不影响支付宝内网穿透
+  useZfb: true # 是否开启支付宝支付
+

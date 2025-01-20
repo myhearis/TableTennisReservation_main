@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atsu.tabletennisreservation.mapper.MenuMapper">
+    <resultMap id="baseMenu" type="Menu">
+        <result property="guid" column="GUID"></result>
+        <result property="parentId" column="PARENT_ID"></result>
+        <result property="isLeaf" column="IS_LEAF"></result>
+        <result property="name" column="NAME"></result>
+        <result property="code" column="CODE"></result>
+        <result property="sort" column="SORT"></result>
+        <result property="type" column="TYPE"></result>
+        <result property="url" column="URL"></result>
+    </resultMap>
+    <!--
+        //查询菜单
+         List<Menu> getMenuList(@Param("menu") Menu menu);
+    -->
+    <select id="getMenuList" resultMap="baseMenu">
+        SELECT  * FROM  MENU WHERE  1=1
+        <if test="menu.name != null and menu.name != '' and menu.name.length() > 0">
+           AND NAME = #{menu.name}
+        </if>
+        <if test="menu.type != null and menu.type != ''">
+            AND  TYPE =  #{menu.type}
+        </if>
+        <if test="menu.url != null and menu.url != '' and menu.url.length() > 0">
+            AND URL = #{menu.url}
+        </if>
+        <if test="menu.isLeaf != null and menu.isLeaf != '' ">
+            AND  IS_LEAF =  #{menu.isLeaf}
+        </if>
+        <if test="menu.parentId != null and menu.parentId != '' and menu.parentId.length() > 0">
+            AND PARENT_ID = #{menu.parentId}
+        </if>
+        <if test="menu.code != null and menu.code != '' and menu.code.length() > 0">
+            AND  CODE = #{menu.code}
+        </if>
+        <if test="menu.guid != null and menu.guid != '' and menu.guid.length() > 0">
+            AND  GUID = #{menu.guid}
+        </if>
+        order  by  sort
+    </select>
+
+    <!--
+     //保存菜单
+        int  saveMenu(@Param("menu") Menu menu);
+    -->
+    <insert id="saveMenu">
+        INSERT INTO MENU (GUID, PARENT_ID, IS_LEAF, NAME, CODE, SORT, TYPE, URL)
+        VALUES (#{menu.guid}, #{menu.parentId}, #{menu.isLeaf}, #{menu.name}, #{menu.code}, #{menu.sort}, #{menu.type}, #{menu.url})
+    </insert>
+    <!--
+       //修改菜单
+        int updateMenuById(@Param("menu") Menu menu);
+    -->
+    <update id="updateMenuById">
+        update  MENU
+        <set>
+            <if test="menu.name != null and menu.name != '' and menu.name.length() > 0">
+                NAME = #{menu.name},
+            </if>
+            <if test="menu.type != null and menu.type != ''">
+                TYPE =  #{menu.type},
+            </if>
+            <if test="menu.url != null and menu.url != '' and menu.url.length() > 0">
+                URL = #{menu.url},
+            </if>
+            <if test="menu.isLeaf != null and menu.isLeaf != ''">
+                IS_LEAF =  #{menu.isLeaf},
+            </if>
+            <if test="menu.parentId != null and menu.parentId != '' and menu.parentId.length() > 0">
+                PARENT_ID = #{menu.parentId},
+            </if>
+            <if test="menu.code != null and menu.code != '' and menu.code.length() > 0">
+                CODE = #{menu.code},
+            </if>
+            <if test="menu.sort != null and menu.sort != ''">
+                SORT = #{menu.sort},
+            </if>
+        </set>
+        where  guid=#{menu.guid}
+    </update>
+<!--    //根据编码模糊查询出所有子级-->
+<!--    List<Menu> getMenuCodeLike(@Param("guid") String guid);-->
+    <select id="getMenuCodeLike" resultMap="baseMenu">
+         SELECT  * FROM  MENU WHERE  1=1
+         <if test="guid != null and guid != '' and guid.length() > 0">
+             AND  GUID LIKE CONCAT(#{guid},'%')
+         </if>
+         ORDER  BY  SORT
+    </select>
+<!--
+    //删除菜单
+    int deleteMenu(@Param("menu") Menu menu);
+-->
+    <delete id="deleteMenu">
+        DELETE  FROM  MENU WHERE  1=1
+        <if test="menu.name != null and menu.name != '' and menu.name.length() > 0">
+            AND NAME = #{menu.name}
+        </if>
+        <if test="menu.type != null and menu.type != ''">
+            AND  TYPE =  #{menu.type}
+        </if>
+        <if test="menu.url != null and menu.url != '' and menu.url.length() > 0">
+            AND URL = #{menu.url}
+        </if>
+        <if test="menu.isLeaf != null and menu.isLeaf != '' ">
+            AND  IS_LEAF =  #{menu.isLeaf}
+        </if>
+        <if test="menu.parentId != null and menu.parentId != '' and menu.parentId.length() > 0">
+            AND PARENT_ID = #{menu.parentId}
+        </if>
+        <if test="menu.code != null and menu.code != '' and menu.code.length() > 0">
+            AND  CODE = #{menu.code}
+        </if>
+        <if test="menu.guid != null and menu.guid != '' and menu.guid.length() > 0">
+            AND  GUID = #{menu.guid}
+        </if>
+    </delete>
+<!--
+//根据角色查询有对应权限的菜单数据
+    List<Menu> getRoleMenuList(@Param("roleId") String roleId);
+-->
+    <select id="getRoleMenuList" resultMap="baseMenu">
+        SELECT
+	        M.GUID ,M.PARENT_ID, M.IS_LEAF , M.NAME , M.CODE , M.SORT , M.SORT , M.`TYPE` , M.URL
+        FROM
+	        ROLE_MENU RM
+        LEFT JOIN MENU M ON M.GUID = RM.MENU_ID
+        WHERE
+	        RM.ROLE_ID = #{roleId}
+	        AND M.GUID IS NOT NULL
+        ORDER BY M.SORT
+    </select>
+</mapper>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atsu.tabletennisreservation.mapper.BallTableMapper">
+    <resultMap id="baseBallTable" type="BallTable">
+        <result property="guid" column="GUID"></result>
+        <result property="imgPath" column="IMG_PATH"></result>
+        <result property="code" column="CODE"></result>
+        <result property="address" column="ADDRESS"></result>
+        <result property="description" column="DESCRIPTION"></result>
+        <result property="createDate" column="CREATE_DATE"></result>
+        <result property="createUser" column="CREATE_USER"></result>
+        <result property="updateDate" column="UPDATE_DATE"></result>
+        <result property="updateUser" column="UPDATE_USER"></result>
+        <result property="status" column="STATUS"></result>
+        <result property="brand" column="BRAND"></result>
+        <result property="floorMaterial" column="FLOOR_MATERIAL"></result>
+        <result property="qualityRating" column="QUALITY_RATING"></result>
+        <result property="startTime" column="START_TIME"></result>
+        <result property="endTime" column="END_TIME"></result>
+        <result property="price" column="PRICE"></result>
+    </resultMap>
+    <sql id="values"></sql>
+<!--
+ //获取当前可预订的球桌信息(根据开放时间和状态过滤)
+    List<BallTable> getCanReserveBallTableList();
+-->
+    <select id="getCanReserveBallTableList" resultMap="baseBallTable">
+        SELECT  *
+        FROM BALL_TABLE T
+        WHERE 1=1
+        AND T.STATUS = 1
+        AND CURRENT_TIME() &gt;= STR_TO_DATE(T.START_TIME  , '%H:%i:%s')
+        AND  CURRENT_TIME() &lt;= STR_TO_DATE(T.END_TIME , '%H:%i:%s')
+    </select>
+<!--    //查询所有球桌列表-->
+<!--    List<BallTable> getAllBallTableList();-->
+    <select id="getAllBallTableList" resultMap="baseBallTable">
+            select * from BALL_TABLE order by code
+    </select>
+<!--    //查询球桌列表，status是否可用-->
+<!--    List<BallTable> getBallTableList(@Param("status") int status);-->
+    <select id="getBallTableList" resultMap="baseBallTable">
+            select * from BALL_TABLE where  STATUS=#{status} order by code
+    </select>
+<!--    //新增球桌-->
+<!--    int saveBallTable(@Param("ballTable") BallTable ballTable);-->
+    <update id="saveBallTable">
+        INSERT INTO BALL_TABLE (GUID, IMG_PATH, CODE, ADDRESS, DESCRIPTION, CREATE_DATE, CREATE_USER, UPDATE_DATE, UPDATE_USER, STATUS
+        ,START_TIME, END_TIME, BRAND, FLOOR_MATERIAL, QUALITY_RATING,PRICE)
+        VALUES (#{ballTable.guid}, #{ballTable.imgPath}, #{ballTable.code}, #{ballTable.address}, #{ballTable.description},
+         #{ballTable.createDate}, #{ballTable.createUser}, #{ballTable.updateDate}, #{ballTable.updateUser}, #{ballTable.status},
+         #{ballTable.startTime},
+        #{ballTable.endTime},
+        #{ballTable.brand},
+        #{ballTable.floorMaterial},
+        #{ballTable.qualityRating},
+        #{ballTable.price}
+         )
+    </update>
+<!--    //更新球桌-->
+<!--    int updateBallTableById(@Param("ballTable") BallTable ballTable);-->
+    <update id="updateBallTableById">
+        UPDATE BALL_TABLE SET IMG_PATH = #{ballTable.imgPath},
+            CODE = #{ballTable.code},
+            ADDRESS =  #{ballTable.address},
+            DESCRIPTION =  #{ballTable.description},
+            UPDATE_DATE = #{ballTable.updateDate},
+            UPDATE_USER = #{ballTable.updateUser},
+            STATUS = #{ballTable.status},
+            IMG_PATH=#{ballTable.imgPath},
+            START_TIME=#{ballTable.startTime},
+            END_TIME=#{ballTable.endTime},
+            BRAND=#{ballTable.brand},
+            FLOOR_MATERIAL = #{ballTable.floorMaterial},
+            QUALITY_RATING = #{ballTable.qualityRating},
+            PRICE =  #{ballTable.price}
+        WHERE GUID = #{ballTable.guid};
+    </update>
+<!--    //根据id查询球桌信息-->
+<!--    List<BallTable> getBallTableById(@Param("guid") String guid);-->
+    <select id="getBallTableById" resultMap="baseBallTable">
+        select  * from BALL_TABLE where guid=#{guid}
+    </select>
+
+<!--    //插入球桌信息-->
+<!--    int addBallTable(@Param("ballTable") BallTable ballTable);-->
+    <insert id="addBallTable">
+        INSERT INTO BALL_TABLE (GUID, IMG_PATH, CODE, ADDRESS, DESCRIPTION, CREATE_DATE, CREATE_USER, UPDATE_DATE, UPDATE_USER, STATUS,
+         START_TIME, END_TIME, BRAND, FLOOR_MATERIAL, QUALITY_RATING,PRICE)
+        VALUES (#{ballTable.guid}, #{ballTable.imgPath}, #{ballTable.code}, #{ballTable.address},  #{ballTable.description},
+        #{ballTable.createDate}, #{ballTable.createUser}, #{ballTable.updateDate},  #{ballTable.updateUser}, #{ballTable.status},
+        #{ballTable.startTime},
+        #{ballTable.endTime},
+        #{ballTable.brand},
+        #{ballTable.floorMaterial},
+        #{ballTable.qualityRating},
+         #{ballTable.price}
+        );
+    </insert>
+<!--    //根据id删除球桌数据-->
+<!--    int deleteBallTableById(@Param("guid") String guid);-->
+    <delete id="deleteBallTableById">
+        delete  from BALL_TABLE where  guid=#{guid}
+    </delete>
+<!--
+   //根据条件查询球桌数据
+    List<BallTable> getBallTableListCondition(@Param("ballTable") BallTable ballTable);
+-->
+    <select id="getBallTableListCondition" resultMap="baseBallTable">
+        SELECT * FROM  BALL_TABLE WHERE 1=1
+        <if test="ballTable.code != null">AND CODE = #{ballTable.code} </if>
+        <if test="ballTable.guid != null">AND GUID = #{ballTable.guid} </if>
+        <if test="ballTable.status != null">AND STATUS = #{ballTable.status} </if>
+        ORDER BY CODE
+    </select>
+</mapper>

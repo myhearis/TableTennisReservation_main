@@ -1,0 +1,329 @@
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>场地信息管理</title>
+    <!-- Google Font: Source Sans Pro -->
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet" th:href="@{/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css}">
+    <!-- iCheck -->
+    <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+    <!-- JQVMap -->
+    <link rel="stylesheet" th:href="@{/plugins/jqvmap/jqvmap.min.css}">
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" th:href="@{/plugins/daterangepicker/daterangepicker.css}">
+    <!-- summernote -->
+    <link rel="stylesheet" th:href="@{/plugins/summernote/summernote-bs4.min.css}">
+</head>
+<style>
+    .img_ball_table{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .table_img_container{
+        width: 150px;
+        height: 100px;
+    }
+    /*.page_nav {*/
+    /*    position: fixed;*/
+    /*    bottom: 20px; !* 调整此值以更改页码组件距离底部的距离 *!*/
+    /*    left: 20%; !* 将页码组件水平居中 *!*/
+    /*    transform: translateX(-50%);*/
+    /*    z-index: 1000; !* 确保页码组件位于其他内容之上 *!*/
+    /*}*/
+    /*将容器兼容子元素高度，防止子元素过多导致导航栏下拉有白边*/
+    .wrapper {
+        display: flex;
+        flex-direction: column; /* 垂直方向排列子元素 */
+        align-items: stretch; /* 子元素的高度与父容器相匹配 */
+    }
+</style>
+<script>
+    //全局变量
+    var base_url = '[[${sys_base_url}]]';
+    var img_url='[[${sys_img_url}]]';
+    var sys_ip_port='[[${sys_ip_port}]]';//系统ip+端口号，目前用于webSocket
+</script>
+<body class="sidebar-mini layout-fixed" style="height: auto;">
+<div class="wrapper">
+    <!--		引入左侧主菜单和导航栏-->
+    <!-- Navbar 导航栏-->
+    <div th:insert="includes/navigation :: navigation"></div>
+    <!-- /.navbar 左侧主菜单-->
+    <!-- Main Sidebar Container -->
+    <div th:insert="includes/side_bar :: side_bar"></div>
+    <!-- Content Wrapper. Contains page content -->
+
+
+
+    <!--页面主要内容-->
+    <div class="content-wrapper" style="min-height: 36px;">
+        <!-- Content Header (Page header) 页面头部内容 -->
+        <div class="content-header">
+            <!--				使用栅格系统-->
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">场地信息管理</h1>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active">Dashboard</li>
+                        </ol>
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content 页面中部内容-->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-success btn_add_ball_table" id="btn_add_ball_table" style="margin-bottom: 10px">添加</button>
+                        <!-- 弹出框 -->
+                        <div role="alert" aria-live="assertive" aria-atomic="true" class="toast" style="position: fixed; top: 60px; right: 30%; width: 250px" data-autohide="true">
+                            <div class="toast-header">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
+                                    <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z"/>
+                                </svg>
+<!--                                <img src="..." class="rounded mr-2" alt="...">-->
+                                <strong class="mr-auto">提示</strong>
+                                <small class="small_text">11 mins ago</small>
+                                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="toast-body">
+                                Hello, world! This is a toast message.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Small boxes (Stat box)展示球桌信息 -->
+                <div class="row">
+                    <nav aria-label="Page navigation example" class="page_nav">
+                        <ul class="pagination" ></ul>
+                    </nav>
+                    <div class="col-md-12 ball_table_view">
+                        <table class="table" id="ball_table">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">球桌编号</th>
+                                <th scope="col">位置</th>
+                                <th scope="col">描述</th>
+                                <th scope="col">状态</th>
+                                <th scope="col">#</th>
+                                <th scope="col">#</th>
+                            </tr>
+                            </thead>
+                            <tbody id="ball_t_body">
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                </div>
+                <!-- /.row -->
+                <!-- /.row (main row) -->
+            </div>
+            <!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+    </div>
+    <!--  模态框 start -->
+    <!-- Modal 修改用户的模态框-->
+    <div class="modal fade" id="myUpdateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myUpdateModalLabel">编辑信息</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label  class="col-sm-2 control-label">图片</label>
+                        <div class="table_img_container">
+                            <img src="http://localhost:8000/uploadFile/2024/01/01/4a93d05f-50ee-4ceb-be72-b1152c053d65.jpg" class="card-img-top img_ball_table" alt="...">
+                        </div>
+                    </div>
+                    <form class="form-horizontal" id="form_update_img"  method="post" enctype="multipart/form-data">
+                        <input type="file" name="img_file" id="img_file" class=""   value="">
+                        <button type="button" id="btn_img_submit" onclick="add_form_update_img()" class="btn btn-outline-primary btn-sm" data-container="body" data-toggle="popover" data-placement="right" >
+                            上传
+                        </button>
+<!--                        <input type="button" class="btn btn-outline-primary btn-sm" id="btn_img_submit" onclick="add_form_update_img()" value="上传" >-->
+                    </form>
+                    <form class="form-horizontal" id="form_update_ball_table">
+                        <!--                        保存当前操作的guid-->
+                        <input type="hidden" name="guid" class="guid" value="">
+                        <!--        用于保存图片路径                -->
+                        <input type="hidden" name="imgPath" class="img_path" value="">
+                        <!--              put请求          -->
+                        <input type="hidden" name="_method" value="PUT">
+                        <div class="form-row">
+                            <div class="col-md-4 mb-3">
+                                <label for="code">编号</label>
+                                <input type="text" class="form-control code" id="code" name="code" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="code">开放时间(24时制)</label>
+                                <input type="time" class="form-control startTime"  id="startTime" name="startTime" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="code">结束时间(24时制)</label>
+                                <input type="time" class="form-control endTime"  id="endTime" name="endTime" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-4 mb-3">
+                                <label for="code">球桌品牌</label>
+                                <input type="text" class="form-control brand" id="brand" name="brand" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="code">地面材质</label>
+                                <input type="text" class="form-control floorMaterial" id="floorMaterial" name="floorMaterial" >
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="code">球桌完好程度</label>
+                                <input type="text" class="form-control qualityRating" id="qualityRating" name="qualityRating" >
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-4 mb-3">
+                                <label for="code">小时单价（元）</label>
+                                <input type="number" class="form-control price" id="price" name="price" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">状态</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input status" type="radio" name="status" id="ball_table_status1" value="0">
+                                <label class="form-check-label" for="ball_table_status1">禁用</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input status" type="radio" name="status"  id="ball_table_status2" value="1">
+                                <label class="form-check-label" for="ball_table_status2">启用</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">地址</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control address" id="address" placeholder="填入地址信息" name="address">
+                                <span  class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">描述</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control description" id="description" placeholder="填入描述信息" name="description">
+                                <span  class="help-block"></span>
+                            </div>
+                        </div>
+                        <small id="msg" class="form-text text-muted text-red"></small>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary btn_ball_table_submit" id="btn_update_submit">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--    模态框 end-->
+    <!--    确认删除的模态框-->
+    <!-- Modal -->
+    <div class="modal fade" id="confirm_delete_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">提示</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    确认删除所选内容吗
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary btn_confirm">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--    引入消息提示 socket_message-->
+    <div th:insert="includes/webSocketMessage :: socket_message"></div>
+    <!-- /.content-wrapper -->
+    <!-- Control Sidebar -->
+    <div th:insert="includes/control_sidebar :: control_sidebar"></div>
+    <!-- /.control-sidebar -->
+    <!-- Main Footer -->
+    <!--		引入页脚内容-->
+<!--    <div th:insert="includes/footer :: footer"></div>-->
+</div>
+<!-- ./wrapper -->
+<!-- REQUIRED SCRIPTS -->
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script th:src="@{/plugins/jquery-ui/jquery-ui.min.js}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge('uibutton', $.ui.button);
+</script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- ChartJS -->
+<script th:src="@{/plugins/chart.js/Chart.min.js}"></script>
+<!-- Sparkline -->
+
+<!-- JQVMap -->
+<script th:src="@{/plugins/jqvmap/jquery.vmap.min.js}"></script>
+<script th:src="@{/plugins/jqvmap/maps/jquery.vmap.usa.js}"></script>
+<!-- jQuery Knob Chart -->
+<script th:src="@{/plugins/jquery-knob/jquery.knob.min.js}"></script>
+<!-- daterangepicker -->
+<script th:src="@{/plugins/moment/moment.min.js}"></script>
+<script th:src="@{/plugins/daterangepicker/daterangepicker.js}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script th:src="@{/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js}"></script>
+<!-- Summernote -->
+<script th:src="@{/plugins/summernote/summernote-bs4.min.js}"></script>
+<!-- overlayScrollbars -->
+<script th:src="@{/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/dist/js/adminlte.js}"></script>
+<!-- AdminLTE for demo purposes -->
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script th:src="@{/dist/js/pages/dashboard.js}"></script>
+<!-- jQuery -->
+<!--页面js-->
+<script th:src="@{/js/manager/ballTableManager.js}"></script>
+<!--消息js-->
+<script th:src="@{/js/user/message.js}"></script>
+<!--通用的工具-->
+<script th:src="@{/js/common_utils.js}"></script>
+</body>
+</html>

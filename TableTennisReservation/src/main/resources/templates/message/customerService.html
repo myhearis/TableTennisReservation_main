@@ -1,0 +1,376 @@
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dahboard</title>
+    <!-- Google Font: Source Sans Pro -->
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet" th:href="@{/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css}">
+    <!-- iCheck -->
+    <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+    <!-- JQVMap -->
+    <link rel="stylesheet" th:href="@{/plugins/jqvmap/jqvmap.min.css}">
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" th:href="@{/plugins/daterangepicker/daterangepicker.css}">
+    <!-- summernote -->
+    <link rel="stylesheet" th:href="@{/plugins/summernote/summernote-bs4.min.css}">
+</head>
+<style>
+    .img_ball_table{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .table_img_container{
+        width: 300px;
+        height: 200px;
+    }
+    /*消息的布局信息*/
+    .message_card .card-body {
+        position: relative;
+    }
+
+    .message_card .card-link {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 10px 10px;
+    ;
+    }
+    /*.page_nav {*/
+    /*    position: fixed;*/
+    /*    bottom: 20px; !* 调整此值以更改页码组件距离底部的距离 *!*/
+    /*    left: 20%; !* 将页码组件水平居中 *!*/
+    /*    transform: translateX(-50%);*/
+    /*    z-index: 1000; !* 确保页码组件位于其他内容之上 *!*/
+    /*}*/
+</style>
+<script>
+    //全局变量
+    var base_url = '[[${sys_base_url}]]';
+    var img_url='[[${sys_img_url}]]';
+    var sys_ip_port='[[${sys_ip_port}]]';//系统ip+端口号，目前用于webSocket
+    var user_id='[[${session.user.guid}]]';//当前登录用户的id
+    var user_name='[[${session.user.userName}]]';//当前登录用户的用户名
+    var user_role_id='[[${session.user.roleId}]]';//当前角色
+    var select_target_id=undefined;//聊天所选择的用户id
+    var select_target_name=undefined;//聊天所选择的用户id
+    var is_allow_send=false;//是否允许发送
+</script>
+<body class="sidebar-mini layout-fixed" style="height: auto;">
+<div class="wrapper">
+    <!--		引入左侧主菜单和导航栏-->
+    <!-- Navbar 导航栏-->
+    <div th:insert="includes/navigation :: navigation"></div>
+    <!-- /.navbar 左侧主菜单-->
+    <!-- Main Sidebar Container -->
+    <div th:insert="includes/side_bar :: side_bar"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <!--页面主要内容-->
+    <div class="content-wrapper" style="min-height: 36px;">
+        <!-- Content Header (Page header) 页面头部内容 -->
+        <div class="content-header">
+            <!--				使用栅格系统-->
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">客服反馈页</h1>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active">Dashboard</li>
+                        </ol>
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content 页面中部内容-->
+        <section class="content">
+            <div class="container-fluid">
+                <!--                工具栏-->
+                <div class="row tool_bar" style="margin-bottom: 10px">
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-outline-danger" id="cancel_session_btn">结束会话</button>
+                    </div>
+                </div>
+                <!-- Small boxes (Stat box)展示消息信息 -->
+                <div class="row">
+                    <div class="col-md-6" >
+                        <div class="card card-danger direct-chat direct-chat-danger" id="chat_card">
+                            <div class="card-header">
+                                <h3 class="card-title">快速聊天</h3>
+                                <div class="card-tools">
+                                    <span data-toggle="tooltip" title="3 New Messages" class="badge badge-light">3</span>
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-tool" data-toggle="tooltip" title="Contacts" data-widget="chat-pane-toggle">
+                                        <i class="fas fa-comments"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <!-- Conversations are loaded here 消息框内容-->
+                                <div class="direct-chat-messages" id="messages_view">
+                                    <!-- Message. Default to the left  左侧消息框-->
+                                    <div class="direct-chat-msg">
+                                        <div class="direct-chat-infos clearfix">
+                                            <span class="direct-chat-name float-left">Alexander Pierce</span>
+                                            <span class="direct-chat-timestamp float-right">23 Jan 2:00 pm</span>
+                                        </div>
+                                        <!-- /.direct-chat-infos -->
+                                        <img class="direct-chat-img" th:src="@{/dist/img/megasteel.png}" alt="message user image">
+                                        <!-- /.direct-chat-img -->
+                                        <div class="direct-chat-text">
+                                            Is this template really for free? That's unbelievable!
+                                        </div>
+                                        <!-- /.direct-chat-text -->
+                                    </div>
+                                    <!-- /.direct-chat-msg -->
+                                    <!-- Message to the right -->
+                                    <div class="direct-chat-msg right">
+                                        <div class="direct-chat-infos clearfix">
+                                            <span class="direct-chat-name float-right">Sarah Bullock</span>
+                                            <span class="direct-chat-timestamp float-left">23 Jan 2:05 pm</span>
+                                        </div>
+                                        <!-- /.direct-chat-infos -->
+                                        <img class="direct-chat-img" th:src="@{/dist/img/megasteel.png}" alt="message user image">
+                                        <!-- /.direct-chat-img -->
+                                        <div class="direct-chat-text">
+                                            You better believe it!
+                                        </div>
+                                        <!-- /.direct-chat-text -->
+                                    </div>
+                                    <!-- /.direct-chat-msg -->
+                                    <!-- Message. Default to the left -->
+                                    <div class="direct-chat-msg">
+                                        <div class="direct-chat-infos clearfix">
+                                            <span class="direct-chat-name float-left">Alexander Pierce</span>
+                                            <span class="direct-chat-timestamp float-right">23 Jan 5:37 pm</span>
+                                        </div>
+                                        <!-- /.direct-chat-infos -->
+                                        <img class="direct-chat-img" th:src="@{/dist/img/megasteel.png}" alt="message user image">
+                                        <!-- /.direct-chat-img -->
+                                        <div class="direct-chat-text">
+                                            Working with AdminLTE on a great new app! Wanna join?
+                                        </div>
+                                        <!-- /.direct-chat-text -->
+                                    </div>
+                                    <!-- /.direct-chat-msg -->
+                                    <!-- Message to the right  右侧消息框-->
+                                    <div class="direct-chat-msg right">
+                                        <!--用户昵称和发送消息的时间-->
+                                        <div class="direct-chat-infos clearfix">
+                                            <span class="direct-chat-name float-right">Sarah Bullock</span>
+                                            <span class="direct-chat-timestamp float-left">23 Jan 6:10 pm</span>
+                                        </div>
+                                        <!-- /.direct-chat-infos 用户头像-->
+                                        <img class="direct-chat-img" th:src="@{/dist/img/megasteel.png}" alt="message user image">
+                                        <!-- /.direct-chat-img -->
+                                        <!-- 发送的消息内容-->
+                                        <div class="direct-chat-text">
+                                            I would love to.
+                                        </div>
+                                        <!-- /.direct-chat-text -->
+                                    </div>
+                                    <!-- /.direct-chat-msg -->
+                                </div>
+                                <!--/.direct-chat-messages-->
+                                <!-- Contacts are loaded here -->
+                                <!-- 最近联系人信息 -->
+                                <div class="direct-chat-contacts">
+                                    <ul class="contacts-list">
+                                        <li>
+                                            <a href="#">
+                                                <img class="contacts-list-img" src="../docs/assets/img/user1-128x128.jpg">
+                                                <div class="contacts-list-info">
+              <span class="contacts-list-name">
+                Count Dracula
+                <small class="contacts-list-date float-right">2/28/2015</small>
+              </span>
+                                                    <span class="contacts-list-msg">How have you been? I was...</span>
+                                                </div>
+                                                <!-- /.contacts-list-info -->
+                                            </a>
+                                        </li>
+                                        <!-- End Contact Item -->
+                                        <li>
+                                            <a href="#">
+                                                <img class="contacts-list-img" src="../docs/assets/img/user7-128x128.jpg">
+                                                <div class="contacts-list-info">
+              <span class="contacts-list-name">
+                Sarah Doe
+                <small class="contacts-list-date float-right">2/23/2015</small>
+              </span>
+                                                    <span class="contacts-list-msg">I will be waiting for...</span>
+                                                </div>
+                                                <!-- /.contacts-list-info -->
+                                            </a>
+                                        </li>
+                                        <!-- End Contact Item -->
+                                        <li>
+                                            <a href="#">
+                                                <img class="contacts-list-img" src="../docs/assets/img/user3-128x128.jpg">
+                                                <div class="contacts-list-info">
+                                                <span class="contacts-list-name">
+                                                Nadia Jolie
+                                                <small class="contacts-list-date float-right">2/20/2015</small>
+                                                </span>
+                                                    <span class="contacts-list-msg">I'll call you back at...</span>
+                                                </div>
+                                                <!-- /.contacts-list-info -->
+                                            </a>
+                                        </li>
+                                        <!-- End Contact Item -->
+                                        <li>
+                                            <a href="#">
+                                                <img class="contacts-list-img" src="../docs/assets/img/user5-128x128.jpg">
+                                                <div class="contacts-list-info">
+              <span class="contacts-list-name">
+                Nora S. Vans
+                <small class="contacts-list-date float-right">2/10/2015</small>
+              </span>
+                                                    <span class="contacts-list-msg">Where is your new...</span>
+                                                </div>
+                                                <!-- /.contacts-list-info -->
+                                            </a>
+                                        </li>
+                                        <!-- End Contact Item -->
+                                        <li>
+                                            <a href="#">
+                                                <img class="contacts-list-img" src="../docs/assets/img/user6-128x128.jpg">
+                                                <div class="contacts-list-info">
+              <span class="contacts-list-name">
+                John K.
+                <small class="contacts-list-date float-right">1/27/2015</small>
+              </span>
+                                                    <span class="contacts-list-msg">Can I take a look at...</span>
+                                                </div>
+                                                <!-- /.contacts-list-info -->
+                                            </a>
+                                        </li>
+                                        <!-- End Contact Item -->
+                                        <li>
+                                            <a href="#">
+                                                <img class="contacts-list-img" src="../docs/assets/img/user8-128x128.jpg">
+                                                <div class="contacts-list-info">
+              <span class="contacts-list-name">
+                Kenneth M.
+                <small class="contacts-list-date float-right">1/4/2015</small>
+              </span>
+                                                    <span class="contacts-list-msg">Never mind I found...</span>
+                                                </div>
+                                                <!-- /.contacts-list-info -->
+                                            </a>
+                                        </li>
+                                        <!-- End Contact Item -->
+                                    </ul>
+                                    <!-- /.contacts-list -->
+                                </div>
+                                <!-- /.direct-chat-pane -->
+                            </div>
+                            <!-- /.card-body -->
+                            <div class="card-footer">
+                                <!-- 发送信息的表单-->
+                                <form action="#" method="post" id="send_form">
+                                    <div class="input-group">
+                                        <input type="text" name="message" placeholder="Type Message ..." class="form-control msg_text">
+                                        <span class="input-group-append">
+                                        <button type="button" class="btn btn-primary send_btn">发送</button>
+                                        </span>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- /.card-footer-->
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
+                <!-- /.row (main row) -->
+            </div>
+            <!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    <!-- Control Sidebar -->
+    <div th:insert="includes/control_sidebar :: control_sidebar"></div>
+    <!--    引入确认模态框组件-->
+    <div th:insert="includes/confirm_modal :: common_confirm_modal"></div>
+    <!--    引入消息提示 socket_message-->
+    <div th:insert="includes/webSocketMessage :: socket_message"></div>
+    <!-- /.control-sidebar -->
+    <!-- Main Footer -->
+    <!--		引入页脚内容-->
+    <div th:insert="includes/footer :: footer"></div>
+</div>
+<!-- ./wrapper -->
+<!-- REQUIRED SCRIPTS -->
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script th:src="@{/plugins/jquery-ui/jquery-ui.min.js}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge('uibutton', $.ui.button);
+</script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- ChartJS -->
+<script th:src="@{/plugins/chart.js/Chart.min.js}"></script>
+<!-- Sparkline -->
+
+<!-- JQVMap -->
+<script th:src="@{/plugins/jqvmap/jquery.vmap.min.js}"></script>
+<script th:src="@{/plugins/jqvmap/maps/jquery.vmap.usa.js}"></script>
+<!-- jQuery Knob Chart -->
+<script th:src="@{/plugins/jquery-knob/jquery.knob.min.js}"></script>
+<!-- daterangepicker -->
+<script th:src="@{/plugins/moment/moment.min.js}"></script>
+<script th:src="@{/plugins/daterangepicker/daterangepicker.js}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script th:src="@{/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js}"></script>
+<!-- Summernote -->
+<script th:src="@{/plugins/summernote/summernote-bs4.min.js}"></script>
+<!-- overlayScrollbars -->
+<script th:src="@{/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/dist/js/adminlte.js}"></script>
+<!-- AdminLTE for demo purposes -->
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script th:src="@{/dist/js/pages/dashboard.js}"></script>
+<!-- jQuery -->
+<!--基础json数据-->
+<script th:src="@{/js/base_data.js}"></script>
+<!--消息js-->
+<script th:src="@{/js/user/message.js}"></script>
+<!--自定义的js-->
+<script th:src="@{/js/message/customerService.js}"></script>
+<!--通用的工具-->
+<script th:src="@{/js/common_utils.js}"></script>
+</body>
+</html>

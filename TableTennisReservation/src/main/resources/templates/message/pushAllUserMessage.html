@@ -1,0 +1,233 @@
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dahboard</title>
+    <!-- Google Font: Source Sans Pro -->
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet" th:href="@{/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css}">
+    <!-- iCheck -->
+    <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+    <!-- JQVMap -->
+    <link rel="stylesheet" th:href="@{/plugins/jqvmap/jqvmap.min.css}">
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" th:href="@{/plugins/daterangepicker/daterangepicker.css}">
+    <!-- summernote -->
+    <link rel="stylesheet" th:href="@{/plugins/summernote/summernote-bs4.min.css}">
+</head>
+<style>
+    .img_ball_table{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .table_img_container{
+        width: 300px;
+        height: 200px;
+    }
+    /*消息的布局信息*/
+    .message_card .card-body {
+        position: relative;
+    }
+
+    .message_card .card-link {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 10px 10px;
+    ;
+    }
+    /*.page_nav {*/
+    /*    position: fixed;*/
+    /*    bottom: 20px; !* 调整此值以更改页码组件距离底部的距离 *!*/
+    /*    left: 20%; !* 将页码组件水平居中 *!*/
+    /*    transform: translateX(-50%);*/
+    /*    z-index: 1000; !* 确保页码组件位于其他内容之上 *!*/
+    /*}*/
+</style>
+<script>
+    //全局变量
+    var base_url = '[[${sys_base_url}]]';
+    var img_url='[[${sys_img_url}]]';
+    var sys_ip_port='[[${sys_ip_port}]]';//系统ip+端口号，目前用于webSocket
+</script>
+<body class="sidebar-mini layout-fixed" style="height: auto;">
+<div class="wrapper">
+    <!--		引入左侧主菜单和导航栏-->
+    <!-- Navbar 导航栏-->
+    <div th:insert="includes/navigation :: navigation"></div>
+    <!-- /.navbar 左侧主菜单-->
+    <!-- Main Sidebar Container -->
+    <div th:insert="includes/side_bar :: side_bar"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <!--页面主要内容-->
+    <div class="content-wrapper" style="min-height: 36px;">
+        <!-- Content Header (Page header) 页面头部内容 -->
+        <div class="content-header">
+            <!--				使用栅格系统-->
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">推送全体消息</h1>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active">Dashboard</li>
+                        </ol>
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content 页面中部内容-->
+        <section class="content">
+            <div class="container-fluid">
+                <!--                工具栏-->
+                <div class="row tool_bar" style="margin-bottom: 10px">
+                    <div class="col-md-12">
+                        <form id="tool_bar_form">
+                            <button type="button" class="btn btn-primary add_msg_btn" id="add_msg_btn">新增</button>
+                            <button type="button" class="btn btn-link view_to_notice_btn" id="view_to_notice_btn">展示为公告</button>
+                            <div class="form-group">
+                                <label for="create_time">选择日期：</label>
+                                <input type="date" id="create_time" class="create_time" name="createTime" pattern="\d{4}-\d{2}-\d{2}">
+                            </div>
+                            <div class="form-check is_read_form-check">
+                                <input class="form-check-input category_radio"  type="radio" name="category" id="exampleRadios1" value="1" checked>
+                                <label class="form-check-label" for="exampleRadios1">
+                                    系统消息
+                                </label>
+                            </div>
+                            <div class="form-check is_read_form-check">
+                                <input class="form-check-input category_radio" type="radio" name="category" id="exampleRadios2" value="7">
+                                <label class="form-check-label" for="exampleRadios2">
+                                    公告消息
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- Small boxes (Stat box)展示消息信息 -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <nav aria-label="Page navigation example" class="page_nav">
+                            <ul class="pagination" ></ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12" id="message_view"></div>
+                </div>
+
+                <!-- /.row -->
+                <!-- /.row (main row) -->
+            </div>
+            <!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+    </div>
+    <!--  模态框 start -->
+    <!-- Modal 修改匹配单的模态框-->
+    <div class="modal fade" id="msgInfoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myUpdateMatchInfoModalLabel">编辑信息</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id="form_update_msg_info">
+                        <!--                        保存当前操作的guid-->
+                        <input type="hidden" name="guid" class="guid" value="">
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">公告内容</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control value" id="value" placeholder="填入公告信息" name="value" style="height: 100px"></textarea>
+                                <span  class="help-block"></span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary save_btn" >保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.content-wrapper -->
+    <!-- Control Sidebar -->
+    <div th:insert="includes/control_sidebar :: control_sidebar"></div>
+    <!--    引入消息提示 socket_message-->
+    <div th:insert="includes/webSocketMessage :: socket_message"></div>
+    <!-- /.control-sidebar -->
+    <!-- Main Footer -->
+    <!--		引入页脚内容-->
+    <div th:insert="includes/footer :: footer"></div>
+</div>
+<!-- ./wrapper -->
+<!-- REQUIRED SCRIPTS -->
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script th:src="@{/plugins/jquery-ui/jquery-ui.min.js}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge('uibutton', $.ui.button);
+</script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- ChartJS -->
+<script th:src="@{/plugins/chart.js/Chart.min.js}"></script>
+<!-- Sparkline -->
+
+<!-- JQVMap -->
+<script th:src="@{/plugins/jqvmap/jquery.vmap.min.js}"></script>
+<script th:src="@{/plugins/jqvmap/maps/jquery.vmap.usa.js}"></script>
+<!-- jQuery Knob Chart -->
+<script th:src="@{/plugins/jquery-knob/jquery.knob.min.js}"></script>
+<!-- daterangepicker -->
+<script th:src="@{/plugins/moment/moment.min.js}"></script>
+<script th:src="@{/plugins/daterangepicker/daterangepicker.js}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script th:src="@{/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js}"></script>
+<!-- Summernote -->
+<script th:src="@{/plugins/summernote/summernote-bs4.min.js}"></script>
+<!-- overlayScrollbars -->
+<script th:src="@{/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/dist/js/adminlte.js}"></script>
+<!-- AdminLTE for demo purposes -->
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script th:src="@{/dist/js/pages/dashboard.js}"></script>
+<!-- jQuery -->
+<!--基础json数据-->
+<script th:src="@{/js/base_data.js}"></script>
+<!--消息js-->
+<script th:src="@{/js/user/message.js}"></script>
+<!--自定义的js-->
+<script th:src="@{/js/message/pushAllUserMessage.js}"></script>
+<!--通用的工具-->
+<script th:src="@{/js/common_utils.js}"></script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dahboard</title>
+    <!-- Google Font: Source Sans Pro -->
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" th:href="@{/plugins/fontawesome-free/css/all.min.css}">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet" th:href="@{/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css}">
+    <!-- iCheck -->
+    <link rel="stylesheet" th:href="@{/plugins/icheck-bootstrap/icheck-bootstrap.min.css}">
+    <!-- JQVMap -->
+    <link rel="stylesheet" th:href="@{/plugins/jqvmap/jqvmap.min.css}">
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" th:href="@{/plugins/overlayScrollbars/css/OverlayScrollbars.min.css}">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" th:href="@{/plugins/daterangepicker/daterangepicker.css}">
+    <!-- summernote -->
+    <link rel="stylesheet" th:href="@{/plugins/summernote/summernote-bs4.min.css}">
+</head>
+<style>
+    .img_ball_table{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .table_img_container{
+        width: 300px;
+        height: 200px;
+    }
+    /*兼容小屏幕设备展示*/
+    #ball_view_ul {
+        max-width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+</style>
+<script>
+    //获取请求域的内容作为全局变量
+    // var xx=[[${session.xx}]];//获取Session中的值
+    var closeTime=[[${closeTime}]];//获取model中的值
+    var base_url = '[[${baseUrl}]]';
+    var img_url='[[${img_url}]]';
+    var sys_ip_port='[[${sys_ip_port}]]';//系统ip+端口号，目前用于webSocket
+    var table_code='[[${ballTable.code}]]';
+    var table_id='[[${ballTable.guid}]]';
+    //球桌开放时段
+    var startTime = '[[${ballTable.startTime}]]';
+    var endTime = '[[${ballTable.endTime}]]';
+    var baseDateStr='1970-01-01';//基准日期
+    //球桌开放时间
+    var sp1 = startTime.split(':');
+    var startTimeObj = new Date(baseDateStr);
+    startTimeObj.setHours(parseInt(sp1[0]));
+    startTimeObj.setMinutes(parseInt(sp1[1]));
+    //球桌结束开放时间
+    var sp2 = endTime.split(':');
+    var endTimeObj = new Date(baseDateStr);
+    endTimeObj.setHours(parseInt(sp2[0]));
+    endTimeObj.setMinutes(parseInt(sp2[1]));
+
+</script>
+<body class="sidebar-mini layout-fixed" style="height: auto;">
+<div class="wrapper">
+    <!--		引入左侧主菜单和导航栏-->
+    <!-- Navbar 导航栏-->
+    <div th:insert="includes/navigation :: navigation"></div>
+    <!-- /.navbar 左侧主菜单-->
+    <!-- Main Sidebar Container -->
+    <div th:insert="includes/side_bar :: side_bar"></div>
+    <!-- Content Wrapper. Contains page content -->
+
+
+
+    <!--页面主要内容-->
+    <div class="content-wrapper" style="min-height: 36px;">
+        <!-- Content Header (Page header) 页面头部内容 -->
+        <div class="content-header">
+            <!--				使用栅格系统-->
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">预订信息</h1>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active">reverse</li>
+                        </ol>
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content 页面中部内容-->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-9">
+                        <figure class="figure">
+                            <figcaption class="figure-caption text-left" th:text="${'编号：' + ballTable.code + '号桌'}">
+                                <input type="hidden" name="code" class="code" th:value="${ballTable.code}">
+                            </figcaption>
+                            <figcaption class="figure-caption text-left" th:text="${'地址：' + ballTable.address }"></figcaption>
+                            <figcaption class="figure-caption text-left" th:text="${'球桌开放时段：' + ballTable.startTime + '-' +ballTable.endTime}"></figcaption>
+                            <figcaption class="figure-caption text-left" th:text="${'打烊时间：' + closeTime + '时' }">
+                                <input type="hidden" id="" class="closeTime" name="closeTime" th:value="${closeTime}">
+                            </figcaption>
+                            <img th:src="${application.img_url + ballTable.imgPath}" class="figure-img img-fluid rounded" alt="...">
+<!--                            <figcaption class="figure-caption text-right">A caption for the above image.</figcaption>-->
+                        </figure>
+                    </div>
+                    <div class="col-md-3">
+                        <form id="reverse_form">
+                            <input name="ballTableId" th:value="${ballTable.guid}" type="hidden">
+                            <input name="code" th:value="${ballTable.code}" type="hidden">
+                            <input name="price" th:value="${ballTable.price}" type="hidden">
+                            <div class="form-group">
+                                <label for="exampleFormControlSelect0">预订日期</label>
+                                <select class="form-control startDate" id="exampleFormControlSelect0" name="startDate">
+                                    <option th:each="item : ${dateList}" th:text="${item}" th:value="${item}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="use_date">球桌使用开始时间:</label>
+                                <select class="form-control" id="use_date" name="useDate">
+                                    <option selected="selected" disabled="disabled">选择开始时间</option>
+                                    <option th:each="item : ${startDateTimeList}" th:text="${item + '时'}" th:value="${item}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="use_time">使用时长(小时)</label>
+                                <select class="form-control countHour" id="use_time" name="countHour" >
+                                    <option selected="selected" disabled="disabled">选择使用时长</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="payAmt">总价(元)</label>
+                                <input type="text"  class="form-control payAmt" name="payAmt" id="payAmt" th:one_price="${ballTable.price}" readonly="readonly"/>
+                            </div>
+                            <button type="button" class="btn btn-primary" id="reverse_submit_btn">提交信息</button>
+                        </form>
+                        <table class="table table-borderless">
+                            <thead>
+                            <tr>
+                                <th scope="col">时间段</th>
+                                <th scope="col">预订状态</th>
+                            </tr>
+                            </thead>
+                            <tbody id="reverse_status_t_body">
+                            <tr>
+                                <th scope="row">09:00-10:00</th>
+                                <td>可预订</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.row -->
+                <!-- /.row (main row) -->
+            </div>
+            <!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- Modal 确认付款框-->
+    <div class="modal fade" id="confirm_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">提示</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    预订成功，是否付款?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+<!--                    <a class="btn btn-primary match_btn" th:href="@{/playerMatching/}" role="button">暂不付款，去匹配球友</a>-->
+                    <button type="button" class="btn btn-primary btn_confirm confirm_pay_btn" href="#">确认付款</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- /.content-wrapper -->
+    <!-- Control Sidebar -->
+    <div th:insert="includes/control_sidebar :: control_sidebar"></div>
+    <!--    引入消息提示 socket_message-->
+    <div th:insert="includes/webSocketMessage :: socket_message"></div>
+    <!--    引入确认模态框组件-->
+    <div th:insert="includes/confirm_modal :: common_confirm_modal"></div>
+    <!-- /.control-sidebar -->
+    <!-- Main Footer -->
+    <!--		引入页脚内容-->
+    <div th:insert="includes/footer :: footer"></div>
+</div>
+<!-- ./wrapper -->
+<!-- REQUIRED SCRIPTS -->
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script th:src="@{/plugins/jquery-ui/jquery-ui.min.js}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge('uibutton', $.ui.button);
+</script>
+<!-- Bootstrap 4 -->
+<script th:src="@{/plugins/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<!-- ChartJS -->
+<script th:src="@{/plugins/chart.js/Chart.min.js}"></script>
+<!-- Sparkline -->
+
+<!-- JQVMap -->
+<script th:src="@{/plugins/jqvmap/jquery.vmap.min.js}"></script>
+<script th:src="@{/plugins/jqvmap/maps/jquery.vmap.usa.js}"></script>
+<!-- jQuery Knob Chart -->
+<script th:src="@{/plugins/jquery-knob/jquery.knob.min.js}"></script>
+<!-- daterangepicker -->
+<script th:src="@{/plugins/moment/moment.min.js}"></script>
+<script th:src="@{/plugins/daterangepicker/daterangepicker.js}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script th:src="@{/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js}"></script>
+<!-- Summernote -->
+<script th:src="@{/plugins/summernote/summernote-bs4.min.js}"></script>
+<!-- overlayScrollbars -->
+<script th:src="@{/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/dist/js/adminlte.js}"></script>
+<!-- AdminLTE for demo purposes -->
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script th:src="@{/dist/js/pages/dashboard.js}"></script>
+<!-- jQuery -->
+<!--自定义的js-->
+<script th:src="@{/js/dashboard/reverse.js}"></script>
+<!--消息js-->
+<script th:src="@{/js/user/message.js}"></script>
+<!--确认模态框js-->
+<script th:src="@{/js/common_utils.js}"></script>
+<!--通用的工具，必须加上-->
+<script th:src="@{/js/common_utils.js}"></script>
+</body>
+</html>

@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atsu.tabletennisreservation.mapper.ReserveMapper">
+    <resultMap id="baseReserve" type="Reserve">
+        <result property="guid" column="GUID"></result>
+        <result property="userId" column="USER_ID"></result>
+        <result property="userName" column="USER_NAME"></result>
+        <result property="tableId" column="TABLE_ID"></result>
+        <result property="startDate" column="START_DATE"></result>
+        <result property="useTime" column="USE_TIME"></result>
+        <result property="payAmt" column="PAY_AMT"></result>
+        <result property="reserveStatus" column="RESERVE_STATUS"></result>
+        <result property="createDate" column="CREATE_DATE"></result>
+        <result property="createUser" column="CREATE_USER"></result>
+        <result property="updateDate" column="UPDATE_DATE"></result>
+        <result property="updateUser" column="UPDATE_USER"></result>
+        <result property="tableCode" column="TABLE_CODE"></result>
+        <result property="processStartDate" column="PROCESS_START_DATE"></result>
+        <result property="tradeNo" column="TRADE_NO"></result>
+        <result property="outTradeNo" column="OUT_TRADE_NO"></result>
+        <result property="matchUserMatchInfoId" column="MATCH_USER_MATCH_INFO_ID"></result>
+        <result property="isDeleted" column="IS_DELETED"></result>
+        <association property="ballTable" select="com.atsu.tabletennisreservation.mapper.BallTableMapper.getBallTableById" column="TABLE_ID"></association>
+    </resultMap>
+<!--    //保存订单-->
+<!--    int saveReserve(@Param("reserve") Reserve reserve );-->
+    <insert id="saveReserve" parameterType="Reserve">
+        INSERT INTO RESERVE (GUID,TABLE_CODE,USER_NAME,USER_ID, TABLE_ID, START_DATE, USE_TIME, PAY_AMT, RESERVE_STATUS,
+         CREATE_DATE, CREATE_USER, UPDATE_DATE, UPDATE_USER,TRADE_NO,OUT_TRADE_NO
+         ,MATCH_USER_MATCH_INFO_ID,IS_DELETED
+         )
+        VALUES (#{reserve.guid},#{reserve.tableCode},#{reserve.userName},#{reserve.userId}, #{reserve.tableId},
+         #{reserve.startDate}, #{reserve.useTime}, #{reserve.payAmt},  #{reserve.reserveStatus}, #{reserve.createDate},
+          #{reserve.createUser}, #{reserve.updateDate}, #{reserve.updateUser},
+           #{reserve.tradeNo}, #{reserve.outTradeNo},#{reserve.matchUserMatchInfoId},#{reserve.isDeleted}
+          )
+    </insert>
+<!--
+ //批量保存
+    int saveReserveBatch(@Param("reserveList") List<Reserve> reserveList);
+-->
+    <insert id="saveReserveBatch">
+          INSERT INTO RESERVE (GUID,TABLE_CODE,USER_NAME,USER_ID, TABLE_ID, START_DATE, USE_TIME, PAY_AMT, RESERVE_STATUS,
+         CREATE_DATE, CREATE_USER, UPDATE_DATE, UPDATE_USER,TRADE_NO,OUT_TRADE_NO
+        ,MATCH_USER_MATCH_INFO_ID,IS_DELETED)
+         VALUES
+        <foreach collection="reserveList" separator="," item="reserve">
+            (#{reserve.guid},#{reserve.tableCode},#{reserve.userName},#{reserve.userId}, #{reserve.tableId},
+            #{reserve.startDate}, #{reserve.useTime}, #{reserve.payAmt},  #{reserve.reserveStatus}, #{reserve.createDate},
+            #{reserve.createUser}, #{reserve.updateDate}, #{reserve.updateUser},
+            #{reserve.tradeNo}, #{reserve.outTradeNo},#{reserve.matchUserMatchInfoId},#{reserve.isDeleted}
+            )
+        </foreach>
+    </insert>
+<!--    //查询预订单，根据Reserve中的条件-->
+<!--    List<Reserve> getReserveList(@Param("reserve") Reserve reserve);-->
+    <select id="getReserveList" resultMap="baseReserve">
+        select * from RESERVE where  1=1
+        <if test="reserve.guid!=null">
+            and  GUID=#{reserve.guid}
+        </if>
+        <if test="reserve.userId!=null">
+            and  USER_ID=#{reserve.userId}
+        </if>
+        <if test="reserve.tableId!=null">
+            and TABLE_ID=#{reserve.tableId}
+        </if>
+        <if test="reserve.tableCode!=null">
+            and TABLE_CODE=#{reserve.tableCode}
+        </if>
+        <if test="reserve.reserveStatus!=null">
+            and RESERVE_STATUS=#{reserve.reserveStatus}
+        </if>
+        <if test="reserve.processStartDate!=null">
+            and PROCESS_START_DATE=#{reserve.processStartDate}
+        </if>
+        <if test="reserve.matchUserMatchInfoId!=null">
+            and MATCH_USER_MATCH_INFO_ID=#{reserve.matchUserMatchInfoId}
+        </if>
+        <if test="reserve.isDeleted!=null">
+            and IS_DELETED=#{reserve.isDeleted}
+        </if>
+    </select>
+<!--    //删除预订单-->
+<!--    Reserve deleteReserveById(@Param("guid") String guid);-->
+    <delete id="deleteReserveById">
+        DELETE FROM  RESERVE WHERE  GUID = #{guid}
+    </delete>
+<!--    //根据日期查询预订数据 年-月-日-->
+<!--    List<Reserve> getReserveByDate(@Param("dateStr") String dateStr);-->
+    <select id="getReserveByDate" resultMap="baseReserve">
+        SELECT  * FROM  RESERVE R WHERE  1=1 AND  R.START_DATE LIKE  concat(#{dateStr},'%')
+        AND  (R.RESERVE_STATUS = 0 OR R.RESERVE_STATUS = 1 OR R.RESERVE_STATUS = 3)
+    </select>
+
+<!--
+    //根据多个日期查询
+    List<Reserve> getReserveByDateList(@Param("dateList") String[] dateList);-->
+    <select id="getReserveByDateList" resultMap="baseReserve">
+         SELECT  * FROM  RESERVE R WHERE  1=1
+         AND  (R.RESERVE_STATUS = 0 OR R.RESERVE_STATUS = 1 OR R.RESERVE_STATUS = 3)
+         AND R.PROCESS_START_DATE IN
+         (
+        <foreach collection="dateList" separator="," item="date">
+            #{date}
+        </foreach>
+         )
+    </select>
+<!--
+ //单个查询(主要根据guid)
+    Reserve getReserve(@Param("reserve") Reserve reserve);
+-->
+    <select id="getReserve" resultMap="baseReserve">
+        select * from RESERVE where  1=1
+        <if test="reserve.guid!=null">
+            and  GUID=#{reserve.guid}
+        </if>
+    </select>
+<!--
+    //批量更新预订单状态
+ int updateBatchStatus(@Param("status") Integer status,@Param("idList") List idList );
+-->
+    <update id="updateBatchStatus">
+        UPDATE  RESERVE SET RESERVE_STATUS = #{status} WHERE  1=1
+        AND GUID IN
+        (
+        <foreach collection="idList" separator="," item="id">
+            #{id}
+        </foreach>
+        )
+    </update>
+<!--
+ //根据id批量查询数据
+    List<Reserve> getReserveListById(@Param("ids") List<String> ids);
+-->
+    <select id="getReserveListById" resultMap="baseReserve">
+        SELECT  * FROM  RESERVE WHERE 1=1
+        AND GUID IN (
+        <foreach collection="ids" separator="," item="id">
+            #{id}
+        </foreach>
+        )
+    </select>
+<!--
+//根据条件删除预订单
+    int deleteReserve(@Param("reserve") Reserve reserve);
+-->
+    <delete id="deleteReserve">
+        delete  from  RESERVE where 1=1
+        <if test="reserve.guid!=null">
+            and  GUID=#{reserve.guid}
+        </if>
+        <if test="reserve.userId!=null">
+            and  USER_ID=#{reserve.userId}
+        </if>
+        <if test="reserve.tableId!=null">
+            and TABLE_ID=#{reserve.tableId}
+        </if>
+        <if test="reserve.tableCode!=null">
+            and TABLE_CODE=#{reserve.tableCode}
+        </if>
+        <if test="reserve.reserveStatus!=null">
+            and RESERVE_STATUS=#{reserve.reserveStatus}
+        </if>
+        <if test="reserve.processStartDate!=null">
+            and PROCESS_START_DATE=#{reserve.processStartDate}
+        </if>
+        <if test="reserve.matchUserMatchInfoId!=null">
+            and MATCH_USER_MATCH_INFO_ID=#{reserve.matchUserMatchInfoId}
+        </if>
+    </delete>
+<!--
+  //根据匹配单id，批量查询数据
+    List<Reserve> getReserveListByMatchInfoId(@Param("matchInfoIdList") List<String> matchInfoIdList);
+-->
+    <select id="getReserveListByMatchInfoId" resultMap="baseReserve">
+        SELECT  * FROM  RESERVE WHERE 1=1
+         AND MATCH_USER_MATCH_INFO_ID IN
+         (
+        <foreach collection="matchInfoIdList" separator="," item="id">
+            #{id}
+        </foreach>
+         )
+    </select>
+<!--
+  //根据匹配单id，逻辑删除预订单数据
+    int deleteMatchingReserveBatch(@Param("matchidList") List<String> matchidList);
+-->
+    <update id="deleteMatchingReserveBatch">
+        UPDATE  RESERVE R SET R.IS_DELETED =1 WHERE 1=1
+ 	        AND MATCH_USER_MATCH_INFO_ID  IN (
+                <foreach collection="matchidList" separator="," item="id">
+                    #{id}
+                </foreach>
+ 	        )
+	        AND EXISTS (
+		        SELECT 1 FROM MATCH_INFO MI WHERE MI.MATCH_USER_ID = R.USER_ID
+		        )
+    </update>
+<!--
+    //查询进行中的预订单
+    List<Reserve> getProgressReserve(@Param("reserve") Reserve reserve);
+-->
+    <select id="getProgressReserve" resultMap="baseReserve">
+        SELECT  * FROM  RESERVE R  WHERE  1=1
+        AND STR_TO_DATE(R.START_DATE ,'%Y-%m-%d %H:%i:%s') > NOW()
+        AND (RESERVE_STATUS = 1 OR RESERVE_STATUS = 3 )
+        <if test="reserve.guid!=null">
+            and  GUID=#{reserve.guid}
+        </if>
+        <if test="reserve.userId!=null">
+            and  USER_ID=#{reserve.userId}
+        </if>
+        <if test="reserve.tableId!=null">
+            and TABLE_ID=#{reserve.tableId}
+        </if>
+        <if test="reserve.tableCode!=null">
+            and TABLE_CODE=#{reserve.tableCode}
+        </if>
+        <if test="reserve.reserveStatus!=null">
+            and RESERVE_STATUS=#{reserve.reserveStatus}
+        </if>
+        <if test="reserve.processStartDate!=null">
+            and PROCESS_START_DATE=#{reserve.processStartDate}
+        </if>
+        <if test="reserve.matchUserMatchInfoId!=null">
+            and MATCH_USER_MATCH_INFO_ID=#{reserve.matchUserMatchInfoId}
+        </if>
+    </select>
+<!--
+ //查询待确认的预订单（即当天进行的订单）
+    List<Reserve> getWaitConfirmReserve(@Param("reserve") Reserve reserve);
+-->
+    <select id="getWaitConfirmReserve" resultMap="baseReserve">
+        SELECT  * FROM  RESERVE WHERE 1=1
+        AND DATE_FORMAT(NOW() , '%Y-%m-%d') >= STR_TO_DATE(PROCESS_START_DATE, '%Y-%m-%d')
+       -- AND DATE_FORMAT(NOW() , '%Y-%m-%d') &lt;= PROCESS_START_DATE
+        -- AND RESERVE_STATUS IN ('1','3')
+        AND (RESERVE_STATUS = 3 or RESERVE_STATUS = 1)
+        <if test="reserve.guid!=null">
+            and  GUID=#{reserve.guid}
+        </if>
+        <if test="reserve.userId!=null">
+            and  USER_ID=#{reserve.userId}
+        </if>
+        <if test="reserve.tableId!=null">
+            and TABLE_ID=#{reserve.tableId}
+        </if>
+        <if test="reserve.tableCode!=null">
+            and TABLE_CODE=#{reserve.tableCode}
+        </if>
+        <if test="reserve.reserveStatus!=null">
+            and RESERVE_STATUS=#{reserve.reserveStatus}
+        </if>
+        <if test="reserve.processStartDate!=null">
+            and PROCESS_START_DATE=#{reserve.processStartDate}
+        </if>
+        <if test="reserve.matchUserMatchInfoId!=null">
+            and MATCH_USER_MATCH_INFO_ID=#{reserve.matchUserMatchInfoId}
+        </if>
+    </select>
+<!--
+ //查询已过期的订单
+    List<Reserve> getExpiredReserve(@Param("reserve") Reserve reserve);
+-->
+    <select id="getExpiredReserve" resultMap="baseReserve">
+          SELECT  * FROM  RESERVE R  WHERE  1=1
+          AND
+          (
+            STR_TO_DATE(R.START_DATE ,'%Y-%m-%d %H:%i:%s') &lt; NOW()
+            or
+            R.RESERVE_STATUS=4
+            or
+            R.RESERVE_STATUS=6
+          )
+            <if test="reserve.guid!=null">
+                and  GUID=#{reserve.guid}
+            </if>
+            <if test="reserve.userId!=null">
+                and  USER_ID=#{reserve.userId}
+            </if>
+            <if test="reserve.tableId!=null">
+                and TABLE_ID=#{reserve.tableId}
+            </if>
+            <if test="reserve.tableCode!=null">
+                and TABLE_CODE=#{reserve.tableCode}
+            </if>
+            <if test="reserve.reserveStatus!=null">
+                and RESERVE_STATUS=#{reserve.reserveStatus}
+            </if>
+            <if test="reserve.processStartDate!=null">
+                and PROCESS_START_DATE=#{reserve.processStartDate}
+            </if>
+            <if test="reserve.matchUserMatchInfoId!=null">
+                and MATCH_USER_MATCH_INFO_ID=#{reserve.matchUserMatchInfoId}
+            </if>
+    </select>
+<!--
+  //查询可发布匹配单的预订单
+    List<Reserve> getCanMatchReserve(@Param("reserve") Reserve reserve);
+-->
+    <select id="getCanMatchReserve" resultMap="baseReserve">
+          SELECT  * FROM  RESERVE R  WHERE  1=1
+          AND R.RESERVE_STATUS = 3
+          AND MATCH_USER_MATCH_INFO_ID IS NULL
+          AND STR_TO_DATE(R.START_DATE ,'%Y-%m-%d %H:%i:%s') > NOW()
+        <if test="reserve.guid!=null">
+            and  GUID=#{reserve.guid}
+        </if>
+        <if test="reserve.userId!=null">
+            and  USER_ID=#{reserve.userId}
+        </if>
+        <if test="reserve.tableId!=null">
+            and TABLE_ID=#{reserve.tableId}
+        </if>
+        <if test="reserve.tableCode!=null">
+            and TABLE_CODE=#{reserve.tableCode}
+        </if>
+        <if test="reserve.processStartDate!=null">
+            and PROCESS_START_DATE=#{reserve.processStartDate}
+        </if>
+    </select>
+<!--
+ //将预订单的引用匹配单信息置空
+    int setReserveMatchingNull(@Param("guid") String guid);
+-->
+    <update id="setReserveMatchingNull">
+        UPDATE  RESERVE SET MATCH_USER_MATCH_INFO_ID = NULL WHERE GUID = #{guid}
+    </update>
+<!--
+ //查询全部日期内有效的预订单（用于初始化基础数据）
+     List<Reserve> getValidReserveByDateList(@Param("dateList") List<String> dateList);
+-->
+    <select id="getValidReserveByDateList" resultMap="baseReserve">
+        	SELECT  * FROM  RESERVE r
+            WHERE  1=1
+            AND r.RESERVE_STATUS in ('3','1')
+            AND (IS_DELETED IS NULL  OR IS_DELETED !=1)
+            AND PROCESS_START_DATE in (
+            <foreach collection="dateList" separator="," item="date">
+                #{date}
+            </foreach>
+            )
+    </select>
+</mapper>
